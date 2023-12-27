@@ -12,7 +12,7 @@ public class World {
                 10,
                 10,
                 13,
-                10,
+                5,
                 10,
                 10,
                 10,
@@ -20,7 +20,7 @@ public class World {
                 10,
                 5,
                 1,
-                1);
+                10);
 
         Simulation testSim = new Simulation(testSettings);
         testSim.run();

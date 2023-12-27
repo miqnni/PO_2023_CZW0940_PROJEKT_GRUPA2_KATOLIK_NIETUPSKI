@@ -38,6 +38,7 @@ public class AbstractWorldMap implements WorldMap {
 //            animals.put(animalPos, animal);
 //        }
         animals.put(animalPos, animal);
+//        System.out.println("Animal placed at " + animalPos);
     }
 
     public void growPlant(Vector2d position) {
@@ -67,6 +68,7 @@ public class AbstractWorldMap implements WorldMap {
             animals.remove(currPos);
             animals.put(nextPos, animal);
         }
+//        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
     }
 
     @Override
@@ -117,6 +119,15 @@ public class AbstractWorldMap implements WorldMap {
         return toVisualize.draw(new Vector2d(0, 0), new Vector2d(width - 1, height - 1));
     }
 
+    public List<Animal> createCurrAnimalList() {
+        List<Animal> currAnimalList = new ArrayList<>();
+        for (Map.Entry<Vector2d, Animal> entry : animals.entrySet()) {
+            Animal currAnimal = entry.getValue();
+            currAnimalList.add(currAnimal);
+        }
+        return currAnimalList;
+    }
+
     public void moveAnimalByGene(Animal animal, int dayNo) {
         int geneNo = dayNo % genomeLength;
         int turnVal = animal.getGenes()[geneNo];
@@ -125,13 +136,29 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public void moveAllAnimalsByGene(int dayNo) {
-        List<Animal> animalsToMove = new ArrayList<>();
-        for (Map.Entry<Vector2d, Animal> entry : animals.entrySet()) {
-            Animal currAnimal = entry.getValue();
-            animalsToMove.add(currAnimal);
-        }
+        List<Animal> animalsToMove = createCurrAnimalList();
         for (Animal currAnimal : animalsToMove) {
             moveAnimalByGene(currAnimal, dayNo);
+        }
+    }
+
+    public void changeOneAnimalsEnergy(Animal animal, int dEnergy) {
+        animal.changeEnergy(dEnergy);
+    }
+
+    public void changeAllAnimalsEnergy(int dEnergy) {
+        List<Animal> animalsToChange = createCurrAnimalList();
+        for (Animal currAnimal : animalsToChange) {
+            changeOneAnimalsEnergy(currAnimal, dEnergy);
+        }
+    }
+
+    public void removeDeadAnimals() {
+        List<Animal> animalsToCheck = createCurrAnimalList();
+        for (Animal currAnimal : animalsToCheck) {
+            if (!currAnimal.isAlive()) {
+                animals.remove(currAnimal.getPosition());
+            }
         }
     }
 

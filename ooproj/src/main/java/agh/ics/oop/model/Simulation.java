@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class Simulation {
@@ -25,9 +26,17 @@ public class Simulation {
 
     private void letOneDayPass(AbstractWorldMap testMap, int currDayVal) {
         testMap.moveAllAnimalsByGene(currDayVal);
+        testMap.changeAllAnimalsEnergy(-1);
         testMap.growPlantMassive();
+        testMap.removeDeadAnimals();
+
+        // SOUT
         System.out.println("DAY " + currDayVal);
         System.out.println(testMap);
+        List<Animal> currAnimalList = testMap.createCurrAnimalList();
+        for (Animal currAnimal : currAnimalList) {
+            System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy());
+        }
         System.out.println("\n\n\n");
     }
 }

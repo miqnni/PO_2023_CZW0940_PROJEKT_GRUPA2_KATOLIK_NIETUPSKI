@@ -9,7 +9,7 @@ public class Animal implements WorldElement {
     private Vector2d position;
     private int energy;
     private int childrenCount;
-    private boolean isAlive;
+    private boolean alive;
     private int daysLived;
     private int dayOfBirth;
     private int dayOfDeath;
@@ -22,7 +22,7 @@ public class Animal implements WorldElement {
         this.daysLived = 0;
         this.energy = settings.getStartAnimalEnergy();
         this.dayOfBirth = dayOfBirth;
-        this.isAlive = true;
+        this.alive = true;
 //        this.genome = new Genome(settings);
         this.genes = new int[settings.getGenomeLength()];
         for (int i = 0; i < settings.getGenomeLength(); i++) {
@@ -70,16 +70,22 @@ public class Animal implements WorldElement {
         orientation = currDir;
     }
 
-    public void nextDay() {
-        daysLived++;
-        energy--;
+    public void changeEnergy(int dEnergy) {
+        energy += dEnergy;
         if (energy <= 0) {
             die();
         }
     }
 
     public void die() {
-        isAlive = false;
+        alive = false;
     }
 
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public Object getEnergy() {
+        return energy;
+    }
 }
