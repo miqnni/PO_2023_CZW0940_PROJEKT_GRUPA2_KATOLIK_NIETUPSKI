@@ -16,6 +16,7 @@ public class Simulation {
             Animal currAnimal = new Animal(testMap.randomField(), settings, 0);
             testMap.place(currAnimal);
         }
+        testMap.growPlantsInRandomFields(settings.getStartPlantCount());
         System.out.println("INITIAL MAP");
         System.out.println(testMap);
         System.out.println("\n\n\n");
@@ -26,9 +27,10 @@ public class Simulation {
 
     private void letOneDayPass(AbstractWorldMap testMap, int currDayVal) {
         testMap.moveAllAnimalsByGene(currDayVal);
+        testMap.allAnimalsEatPlantIfPossible();
         testMap.changeAllAnimalsEnergy(-1);
-        testMap.growPlantMassive();
         testMap.removeDeadAnimals();
+        testMap.growPlantMassive();
 
         // SOUT
         System.out.println("DAY " + currDayVal);

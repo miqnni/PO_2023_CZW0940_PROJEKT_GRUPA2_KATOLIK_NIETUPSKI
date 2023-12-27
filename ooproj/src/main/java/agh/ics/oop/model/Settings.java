@@ -17,8 +17,9 @@ public class Settings {
     private int genomeLength;
     private int behaviorType;
     private int durationInDays;
+    private double defaultPlantGrowthChance;
 
-    public Settings(int mapWidth, int mapHeight, int startPlantCount, int energyPerPlant, int newPlantsPerDay, int plantGrowthType, int startAnimalCount, int startAnimalEnergy, int reproductionEnergyThreshold, int energyUsedByParents, int minMutationCount, int maxMutationCount, int mutationType, int genomeLength, int behaviorType, int durationInDays) {
+    public Settings(int mapWidth, int mapHeight, int startPlantCount, int energyPerPlant, int newPlantsPerDay, int plantGrowthType, int startAnimalCount, int startAnimalEnergy, int reproductionEnergyThreshold, int energyUsedByParents, int minMutationCount, int maxMutationCount, int mutationType, int genomeLength, int behaviorType, int durationInDays, double defaultPlantGrowthChance) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.startPlantCount = startPlantCount;
@@ -35,6 +36,7 @@ public class Settings {
         this.genomeLength = genomeLength;
         this.behaviorType = behaviorType;
         this.durationInDays = durationInDays;
+        this.defaultPlantGrowthChance = defaultPlantGrowthChance;
     }
 
     public int getMapWidth() {
@@ -99,5 +101,9 @@ public class Settings {
 
     public int getDurationInDays() {
         return durationInDays;
+    }
+
+    public double getDefaultPlantGrowthChance() {
+        return defaultPlantGrowthChance;
     }
 }

@@ -34,7 +34,8 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString() {
-        return orientation.toString();
+//        return orientation.toString();
+        return "O";
     }
 
     public boolean isAt(Vector2d position) {

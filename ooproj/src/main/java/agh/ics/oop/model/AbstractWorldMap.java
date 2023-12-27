@@ -15,7 +15,9 @@ public class AbstractWorldMap implements WorldMap {
     private final int width;
     private final int height;
 
-    private final int genomeLength;
+//    private final int genomeLength;
+
+    private final Settings settings;
 
     public AbstractWorldMap(Settings settings) {
         this.mapId = UUID.randomUUID();
@@ -24,10 +26,11 @@ public class AbstractWorldMap implements WorldMap {
         this.plantGrowthChance = new double[width][height];
         for (int xi = 0; xi < width; xi++) {
             for (int yi = 0; yi < height; yi++) {
-                plantGrowthChance[xi][yi] = 0.003;
+                plantGrowthChance[xi][yi] = settings.getDefaultPlantGrowthChance();
             }
         }
-        this.genomeLength = settings.getGenomeLength();
+//        this.genomeLength = settings.getGenomeLength();
+        this.settings = settings;
     }
 
 
@@ -55,6 +58,17 @@ public class AbstractWorldMap implements WorldMap {
                 if (growthTestResult < growthChance) {
                     growPlant(new Vector2d(xi, yi));
                 }
+            }
+        }
+    }
+
+    public void growPlantsInRandomFields(int plantCnt) {
+        int successCnt = 0;
+        while (successCnt < plantCnt) {
+            Vector2d currRandPos = randomField();
+            if (plants.get(currRandPos) == null) {
+                growPlant(currRandPos);
+                successCnt++;
             }
         }
     }
@@ -129,7 +143,7 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public void moveAnimalByGene(Animal animal, int dayNo) {
-        int geneNo = dayNo % genomeLength;
+        int geneNo = dayNo % settings.getGenomeLength();
         int turnVal = animal.getGenes()[geneNo];
         turn(animal, turnVal);
         moveForward(animal);
@@ -159,6 +173,22 @@ public class AbstractWorldMap implements WorldMap {
             if (!currAnimal.isAlive()) {
                 animals.remove(currAnimal.getPosition());
             }
+        }
+    }
+
+    public void animalEatsPlantIfPossible(Animal animal) {
+        Vector2d position = animal.getPosition();
+        if (plants.get(position) != null) {
+            plants.remove(position);
+            changeOneAnimalsEnergy(animal, settings.getEnergyPerPlant());
+            System.out.println("ATTENTION!!! Animal ate plant at " + position);
+        }
+    }
+
+    public void allAnimalsEatPlantIfPossible() {
+        List<Animal> currAnimalList = createCurrAnimalList();
+        for (Animal currAnimal : currAnimalList) {
+            animalEatsPlantIfPossible(currAnimal);
         }
     }
 
