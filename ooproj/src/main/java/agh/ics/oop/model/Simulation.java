@@ -29,16 +29,24 @@ public class Simulation {
         testMap.moveAllAnimalsByGene(currDayVal);
         testMap.allAnimalsEatPlantIfPossible();
         testMap.changeAllAnimalsEnergy(-1);
-        testMap.removeDeadAnimals();
+        testMap.removeDeadAnimals(currDayVal);
+        testMap.increaseDayCountOfAllAnimals();
         testMap.growPlantMassive();
+    }
 
-        // SOUT
+    private void printStats(AbstractWorldMap testMap, int currDayVal) {
         System.out.println("DAY " + currDayVal);
         System.out.println(testMap);
         List<Animal> currAnimalList = testMap.createCurrAnimalList();
         for (Animal currAnimal : currAnimalList) {
-            System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy());
+            System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy() + " days=" + currAnimal.getDaysLived());
         }
+        System.out.println("Animal count: " + testMap.getAnimalCount());
+        System.out.println("Plant count: " + testMap.getPlantCount());
+        System.out.println("Empty Field count: " + testMap.getEmptyFieldCount());
+        System.out.println("Avg Energy: " + testMap.getAvgEnergy());
+        System.out.println("Avg Lifespan: " + testMap.getAvgLifespanOfDeadAnimals());
+        System.out.println("Avg Children count: " + testMap.getAvgChildrenCount());
         System.out.println("\n\n\n");
     }
 }

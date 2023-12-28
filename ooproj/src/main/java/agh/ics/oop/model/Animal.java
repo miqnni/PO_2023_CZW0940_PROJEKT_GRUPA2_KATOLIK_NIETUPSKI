@@ -16,6 +16,8 @@ public class Animal implements WorldElement {
 //    private Genome genome;
     private int[] genes;
 
+    private int startGeneId;
+
     public Animal(Vector2d position, Settings settings, int dayOfBirth) {
         this.orientation = MapDirection.NORTH;
         this.position = position;
@@ -30,6 +32,8 @@ public class Animal implements WorldElement {
             int newGene = rand.nextInt(8);
             genes[i] = newGene;
         }
+        this.startGeneId = 0;
+        this.childrenCount = 0;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class Animal implements WorldElement {
         int tempTimesTurned = timesTurned;
         MapDirection currDir = orientation;
         tempTimesTurned %= 8;
-        for (int i = 0; i < timesTurned; i++)
+        for (int i = 0; i < tempTimesTurned; i++)
             currDir = next(currDir);
         orientation = currDir;
     }
@@ -86,7 +90,27 @@ public class Animal implements WorldElement {
         return alive;
     }
 
-    public Object getEnergy() {
+    public int getEnergy() {
         return energy;
+    }
+
+    public int getStartGeneId() {
+        return startGeneId;
+    }
+
+    public int getDaysLived() {
+        return daysLived;
+    }
+
+    public void setDayOfDeath(int dayOfDeath) {
+        this.dayOfDeath = dayOfDeath;
+    }
+
+    public void addOneDay() {
+        daysLived++;
+    }
+
+    public int getChildrenCount() {
+        return childrenCount;
     }
 }

@@ -8,6 +8,8 @@ public class AbstractWorldMap implements WorldMap {
     protected Map<Vector2d, Animal> animals = new HashMap<>();
     protected Map<Vector2d, Plant> plants = new HashMap<>();
 
+    protected Map<Integer[], Integer> genomeCount = new HashMap<>();
+
     protected double[][] plantGrowthChance;
 
     protected UUID mapId;
@@ -18,6 +20,8 @@ public class AbstractWorldMap implements WorldMap {
 //    private final int genomeLength;
 
     private final Settings settings;
+
+    private List<Animal> deadAnimals;
 
     public AbstractWorldMap(Settings settings) {
         this.mapId = UUID.randomUUID();
@@ -31,6 +35,7 @@ public class AbstractWorldMap implements WorldMap {
         }
 //        this.genomeLength = settings.getGenomeLength();
         this.settings = settings;
+        this.deadAnimals = new ArrayList<>();
     }
 
 
@@ -143,7 +148,7 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public void moveAnimalByGene(Animal animal, int dayNo) {
-        int geneNo = dayNo % settings.getGenomeLength();
+        int geneNo = (animal.getStartGeneId() + dayNo) % settings.getGenomeLength();
         int turnVal = animal.getGenes()[geneNo];
         turn(animal, turnVal);
         moveForward(animal);
@@ -167,10 +172,12 @@ public class AbstractWorldMap implements WorldMap {
         }
     }
 
-    public void removeDeadAnimals() {
+    public void removeDeadAnimals(int dayNo) {
         List<Animal> animalsToCheck = createCurrAnimalList();
         for (Animal currAnimal : animalsToCheck) {
             if (!currAnimal.isAlive()) {
+                currAnimal.setDayOfDeath(dayNo);
+                deadAnimals.add(currAnimal);
                 animals.remove(currAnimal.getPosition());
             }
         }
@@ -202,4 +209,64 @@ public class AbstractWorldMap implements WorldMap {
     public Map<Vector2d, Animal> getAnimals() {
         return animals;
     }
+
+    public int getActivatedGeneId(Animal animal, int dayNo) {
+        return (animal.getStartGeneId() + dayNo) % settings.getGenomeLength();
+    }
+
+    public int getAnimalCount() {
+        return animals.size();
+    }
+
+    public int getPlantCount() {
+        return plants.size();
+    }
+
+    public int getEmptyFieldCount() {
+        return ((width - 1) * (height - 1)) - getAnimalCount() - getPlantCount();
+    }
+
+    public double getAvgEnergy() {
+        List<Animal> currAnimalList = createCurrAnimalList();
+        if (currAnimalList.isEmpty())
+            return -1;
+        int energySum = 0;
+        for (Animal animal : currAnimalList) {
+            energySum += animal.getEnergy();
+        }
+        return (double) energySum / (double) currAnimalList.size();
+    }
+
+    public double getAvgLifespanOfDeadAnimals() {
+        List<Animal> deadAnimalList = deadAnimals;
+        if (deadAnimalList.isEmpty())
+            return -1;
+        int daysLivedSum = 0;
+        for (Animal animal : deadAnimalList) {
+            daysLivedSum += animal.getDaysLived();
+        }
+        return (double) daysLivedSum / (double) deadAnimalList.size();
+    }
+
+    public double getAvgChildrenCount() {
+        List<Animal> currAnimalList = createCurrAnimalList();
+        if (currAnimalList.isEmpty())
+            return -1;
+        int childrenSum = 0;
+        for (Animal animal : currAnimalList) {
+            childrenSum += animal.getChildrenCount();
+        }
+        return (double) childrenSum / (double) currAnimalList.size();
+    }
+
+    public void increaseDayCountOfAllAnimals() {
+        List<Animal> currAnimalList = createCurrAnimalList();
+        for (Animal animal : currAnimalList) {
+            animal.addOneDay();
+        }
+    }
+
+//    public void trackGenome(int[] genome) {
+//        Integer[] genomeInt = (Integer[]) genome;
+//    }
 }
