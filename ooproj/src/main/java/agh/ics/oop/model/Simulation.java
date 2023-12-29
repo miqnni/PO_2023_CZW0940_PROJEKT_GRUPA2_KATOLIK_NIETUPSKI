@@ -17,9 +17,9 @@ public class Simulation {
             testMap.place(currAnimal);
         }
         testMap.growPlantsInRandomFields(settings.getStartPlantCount());
-        System.out.println("INITIAL MAP");
-        System.out.println(testMap);
-        System.out.println("\n\n\n");
+//        System.out.println("INITIAL MAP");
+//        System.out.println(testMap);
+//        System.out.println("\n\n\n");
         for (int dayCnt = 0; dayCnt < settings.getDurationInDays(); dayCnt++) {
             letOneDayPass(testMap, dayCnt);
         }
@@ -32,6 +32,8 @@ public class Simulation {
         testMap.removeDeadAnimals(currDayVal);
         testMap.increaseDayCountOfAllAnimals();
         testMap.growPlantMassive();
+
+        printStats(testMap, currDayVal);
     }
 
     private void printStats(AbstractWorldMap testMap, int currDayVal) {
@@ -39,7 +41,7 @@ public class Simulation {
         System.out.println(testMap);
         List<Animal> currAnimalList = testMap.createCurrAnimalList();
         for (Animal currAnimal : currAnimalList) {
-            System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy() + " days=" + currAnimal.getDaysLived());
+            System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy() + " days=" + currAnimal.getDaysLived() + " GENES: " + Arrays.toString(currAnimal.getGenes()));
         }
         System.out.println("Animal count: " + testMap.getAnimalCount());
         System.out.println("Plant count: " + testMap.getPlantCount());
@@ -47,6 +49,7 @@ public class Simulation {
         System.out.println("Avg Energy: " + testMap.getAvgEnergy());
         System.out.println("Avg Lifespan: " + testMap.getAvgLifespanOfDeadAnimals());
         System.out.println("Avg Children count: " + testMap.getAvgChildrenCount());
+        System.out.println("Most frequent gene: " + testMap.findMostFrequentGene());
         System.out.println("\n\n\n");
     }
 }

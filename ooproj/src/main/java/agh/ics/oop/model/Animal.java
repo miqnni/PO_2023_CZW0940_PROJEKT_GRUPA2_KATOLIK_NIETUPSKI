@@ -18,6 +18,12 @@ public class Animal implements WorldElement {
 
     private int startGeneId;
 
+    private int plantsEaten;
+
+    private Settings settings;
+
+    private int OZNACZENIE;
+
     public Animal(Vector2d position, Settings settings, int dayOfBirth) {
         this.orientation = MapDirection.NORTH;
         this.position = position;
@@ -34,12 +40,19 @@ public class Animal implements WorldElement {
         }
         this.startGeneId = 0;
         this.childrenCount = 0;
+        this.plantsEaten = 0;
+        this.settings = settings;
+
+        Random random = new Random();
+        this.OZNACZENIE = random.nextInt(10);
     }
 
     @Override
     public String toString() {
 //        return orientation.toString();
-        return "O";
+//        return "O";
+
+        return String.valueOf(OZNACZENIE);
     }
 
     public boolean isAt(Vector2d position) {
@@ -73,6 +86,11 @@ public class Animal implements WorldElement {
         for (int i = 0; i < tempTimesTurned; i++)
             currDir = next(currDir);
         orientation = currDir;
+    }
+
+    public void eatPlant() {
+        changeEnergy(settings.getEnergyPerPlant());
+        plantsEaten++;
     }
 
     public void changeEnergy(int dEnergy) {
@@ -113,4 +131,6 @@ public class Animal implements WorldElement {
     public int getChildrenCount() {
         return childrenCount;
     }
+
+
 }

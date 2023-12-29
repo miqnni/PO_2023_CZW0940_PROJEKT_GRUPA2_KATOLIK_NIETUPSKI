@@ -87,7 +87,7 @@ public class AbstractWorldMap implements WorldMap {
             animals.remove(currPos);
             animals.put(nextPos, animal);
         }
-//        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
+        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
     }
 
     @Override
@@ -187,7 +187,8 @@ public class AbstractWorldMap implements WorldMap {
         Vector2d position = animal.getPosition();
         if (plants.get(position) != null) {
             plants.remove(position);
-            changeOneAnimalsEnergy(animal, settings.getEnergyPerPlant());
+//            changeOneAnimalsEnergy(animal, settings.getEnergyPerPlant());
+            animal.eatPlant();
             System.out.println("ATTENTION!!! Animal ate plant at " + position);
         }
     }
@@ -210,7 +211,7 @@ public class AbstractWorldMap implements WorldMap {
         return animals;
     }
 
-    public int getActivatedGeneId(Animal animal, int dayNo) {
+    public int getActivatedGeneIdx(Animal animal, int dayNo) {
         return (animal.getStartGeneId() + dayNo) % settings.getGenomeLength();
     }
 
@@ -269,4 +270,24 @@ public class AbstractWorldMap implements WorldMap {
 //    public void trackGenome(int[] genome) {
 //        Integer[] genomeInt = (Integer[]) genome;
 //    }
+
+    public int findMostFrequentGene() {
+        List<Animal> currAnimalList = createCurrAnimalList();
+        int[] geneOccurrences = new int[8];
+        for (Animal animal : currAnimalList) {
+            int[] currGenes = animal.getGenes();
+            for (int gene : currGenes) {
+                geneOccurrences[gene]++;
+            }
+        }
+        int mostFrequentGene = -1;
+        int mostFrequentGeneCount = -1;
+        for (int i = 0; i < 8; i++) {
+            if (geneOccurrences[i] > mostFrequentGeneCount) {
+                mostFrequentGene = i;
+                mostFrequentGeneCount = geneOccurrences[i];
+            }
+        }
+        return mostFrequentGene;
+    }
 }
