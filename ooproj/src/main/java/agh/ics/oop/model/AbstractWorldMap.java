@@ -5,8 +5,11 @@ import agh.ics.oop.model.util.MapVisualizer;
 import java.util.*;
 
 public class AbstractWorldMap implements WorldMap {
-    protected Map<Vector2d, Animal> animals = new HashMap<>();
+    protected Map<Vector2d, AnimalList> animals = new HashMap<>();
     protected Map<Vector2d, Plant> plants = new HashMap<>();
+
+    private List<Animal> deadAnimals;
+    private List<Animal> livingAnimals;
 
     protected Map<Integer[], Integer> genomeCount = new HashMap<>();
 
@@ -21,7 +24,6 @@ public class AbstractWorldMap implements WorldMap {
 
     private final Settings settings;
 
-    private List<Animal> deadAnimals;
 
     public AbstractWorldMap(Settings settings) {
         this.mapId = UUID.randomUUID();
@@ -35,6 +37,7 @@ public class AbstractWorldMap implements WorldMap {
         }
 //        this.genomeLength = settings.getGenomeLength();
         this.settings = settings;
+        this.livingAnimals = new ArrayList<>();
         this.deadAnimals = new ArrayList<>();
     }
 
@@ -45,7 +48,21 @@ public class AbstractWorldMap implements WorldMap {
 //        if (canMoveTo(animalPos)) {
 //            animals.put(animalPos, animal);
 //        }
-        animals.put(animalPos, animal);
+
+//        animals.put(animalPos, animal);
+
+        if (animals.get(animalPos) != null) {
+            animals.get(animalPos).add(animal);
+        }
+        else {
+            AnimalList newAnimalList = new AnimalList();
+            newAnimalList.add(animal);
+            animals.put(animalPos, newAnimalList);
+        }
+
+        livingAnimals.add(animal);
+
+
 //        System.out.println("Animal placed at " + animalPos);
     }
 
@@ -55,19 +72,26 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public void growPlantMassive() {
-        for (int xi = 0; xi < width; xi++) {
-            for (int yi = 0; yi < height; yi++) {
-                Random rand = new Random();
-                double growthTestResult = rand.nextDouble();
-                double growthChance = plantGrowthChance[xi][yi];
-                if (growthTestResult < growthChance) {
-                    growPlant(new Vector2d(xi, yi));
-                }
-            }
-        }
+//        for (int xi = 0; xi < width; xi++) {
+//            for (int yi = 0; yi < height; yi++) {
+//                Random rand = new Random();
+//                double growthTestResult = rand.nextDouble();
+//                double growthChance = plantGrowthChance[xi][yi];
+//                if (growthTestResult < growthChance) {
+//                    growPlant(new Vector2d(xi, yi));
+//                }
+//            }
+//        }
+        int howManyPlantsToGrow = settings.getNewPlantsPerDay();
+        growPlantsInRandomFields(howManyPlantsToGrow);
+
+
     }
 
     public void growPlantsInRandomFields(int plantCnt) {
+
+
+
         int successCnt = 0;
         while (successCnt < plantCnt) {
             Vector2d currRandPos = randomField();
@@ -83,9 +107,32 @@ public class AbstractWorldMap implements WorldMap {
         Vector2d currPos = animal.getPosition();
         animal.moveForward(this);
         Vector2d nextPos = animal.getPosition();
+//        if (!currPos.equals(nextPos)) {
+//            animals.remove(currPos);
+//            animals.put(nextPos, animal);
+//        }
+
         if (!currPos.equals(nextPos)) {
-            animals.remove(currPos);
-            animals.put(nextPos, animal);
+            AnimalList currPosAnimalList = animals.get(currPos);
+
+            // remove animal from the list or remove the entire list if it's the only animal
+            if (currPosAnimalList.size() == 1) {
+                animals.remove(currPos);
+            }
+            else {
+                currPosAnimalList.remove(animal);
+            }
+
+            // add animal to an existing list on nextPos or create a new list
+            if (animals.get(nextPos) == null) {
+                AnimalList newAnimalList = new AnimalList();
+                newAnimalList.add(animal);
+                animals.put(nextPos, newAnimalList);
+            }
+            else {
+                AnimalList nextAnimalList = animals.get(nextPos);
+                nextAnimalList.add(animal);
+            }
         }
         System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
     }
@@ -111,7 +158,7 @@ public class AbstractWorldMap implements WorldMap {
     @Override
     public List<WorldElement> getElements() {
         List<WorldElement> allElements = new ArrayList<>();
-        for (Map.Entry<Vector2d, Animal> entry : animals.entrySet()) {
+        for (Map.Entry<Vector2d, AnimalList> entry : animals.entrySet()) {
             WorldElement currElement = entry.getValue();
             allElements.add(currElement);
         }
@@ -139,12 +186,13 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public List<Animal> createCurrAnimalList() {
-        List<Animal> currAnimalList = new ArrayList<>();
-        for (Map.Entry<Vector2d, Animal> entry : animals.entrySet()) {
-            Animal currAnimal = entry.getValue();
-            currAnimalList.add(currAnimal);
-        }
-        return currAnimalList;
+//        List<Animal> currAnimalList = new ArrayList<>();
+//        for (Map.Entry<Vector2d, Animal> entry : animals.entrySet()) {
+//            Animal currAnimal = entry.getValue();
+//            currAnimalList.add(currAnimal);
+//        }
+//        return currAnimalList;
+        return livingAnimals;
     }
 
     public void moveAnimalByGene(Animal animal, int dayNo) {
@@ -173,12 +221,31 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public void removeDeadAnimals(int dayNo) {
-        List<Animal> animalsToCheck = createCurrAnimalList();
-        for (Animal currAnimal : animalsToCheck) {
+        Iterator<Animal> iterator = livingAnimals.iterator();
+
+//        List<Animal> animalsToCheck = createCurrAnimalList();
+        while (iterator.hasNext()) {
+            Animal currAnimal = iterator.next();
             if (!currAnimal.isAlive()) {
                 currAnimal.setDayOfDeath(dayNo);
+                iterator.remove();
                 deadAnimals.add(currAnimal);
-                animals.remove(currAnimal.getPosition());
+
+//                animals.remove(currAnimal.getPosition());
+
+
+
+                // animal removal procedure
+
+                Vector2d currPos = currAnimal.getPosition();
+                AnimalList currPosAnimalList = animals.get(currPos);
+                if (currPosAnimalList.size() == 1) {
+                    animals.remove(currPos);
+                }
+                else {
+                    currPosAnimalList.remove(currAnimal);
+                }
+
             }
         }
     }
@@ -207,7 +274,7 @@ public class AbstractWorldMap implements WorldMap {
         return new Vector2d(randX, randY);
     }
 
-    public Map<Vector2d, Animal> getAnimals() {
+    public Map<Vector2d, AnimalList> getAnimals() {
         return animals;
     }
 

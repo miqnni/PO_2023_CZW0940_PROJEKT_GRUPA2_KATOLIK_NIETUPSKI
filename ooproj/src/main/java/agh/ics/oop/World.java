@@ -8,23 +8,23 @@ import java.util.List;
 public class World {
     public static void main(String[] args) {
         Settings testSettings = new Settings(
-                1,
-                5,
+                30,
+                30,
                 0,
                 7,
-                0,
-                -1,
-                2,
-                50,
-                -1,
-                -1,
-                -1,
-                -1,
-                -1,
                 5,
                 -1,
+                1,
+                10,
+                -1,
+                -1,
+                -1,
+                -1,
+                -1,
+                10,
+                -1,
                 50,
-                0.00);
+                0.0015);
 
         Simulation testSim = new Simulation(testSettings);
         testSim.run();
@@ -35,9 +35,10 @@ public class World {
 //        System.out.println(myList.toString());
 
         //TODO
-        //  PROBLEM!!!
-        //  When more than 1 animal enter the same field, only one remains on the map and the rest get removed.
-
+        //  zmienic losowanie, gdzie rosnie roslina
+        //  rywalizacja o rosline
+        //  rozmnazanie
+        //  warianty mapy
 
     }
 }
