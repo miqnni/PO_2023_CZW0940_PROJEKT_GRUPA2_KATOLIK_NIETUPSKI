@@ -33,4 +33,13 @@ public class AnimalList implements WorldElement {
     public void add(Animal animal) {
         animals.add(animal);
     }
+
+    public Animal get(int idx) {
+        return animals.get(idx);
+    }
+
+    public List<Animal> getAnimals() {
+        return animals;
+    }
+
 }

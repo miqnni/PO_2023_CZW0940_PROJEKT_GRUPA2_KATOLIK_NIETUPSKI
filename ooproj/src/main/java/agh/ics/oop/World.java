@@ -8,16 +8,16 @@ import java.util.List;
 public class World {
     public static void main(String[] args) {
         Settings testSettings = new Settings(
-                30,
-                30,
-                0,
-                7,
+                2,
                 5,
+                7,
+                7,
+                4,
                 -1,
-                1,
+                3,
+                50,
                 10,
-                -1,
-                -1,
+                4,
                 -1,
                 -1,
                 -1,
@@ -35,10 +35,10 @@ public class World {
 //        System.out.println(myList.toString());
 
         //TODO
-        //  zmienic losowanie, gdzie rosnie roslina
-        //  rywalizacja o rosline
-        //  rozmnazanie
         //  warianty mapy
+        //  wariamty genow
+        //  wszystko ma dzialac
+        //  interfejs
 
     }
 }

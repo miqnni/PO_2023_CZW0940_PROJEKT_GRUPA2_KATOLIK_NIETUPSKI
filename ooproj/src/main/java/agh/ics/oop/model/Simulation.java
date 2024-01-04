@@ -26,8 +26,13 @@ public class Simulation {
     }
 
     private void letOneDayPass(AbstractWorldMap testMap, int currDayVal) {
+        // day
         testMap.moveAllAnimalsByGene(currDayVal);
-        testMap.allAnimalsEatPlantIfPossible();
+//        testMap.allAnimalsEatPlantIfPossible();
+        testMap.massivePlantConsumption();
+        testMap.reproduceOnEveryPossibleField(currDayVal);
+
+        // night
         testMap.changeAllAnimalsEnergy(-1);
         testMap.removeDeadAnimals(currDayVal);
         testMap.increaseDayCountOfAllAnimals();

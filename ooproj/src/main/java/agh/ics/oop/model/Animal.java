@@ -22,6 +22,9 @@ public class Animal implements WorldElement {
 
     private Settings settings;
 
+    private Animal parent1;
+    private Animal parent2;
+
     private int OZNACZENIE;
 
     public Animal(Vector2d position, Settings settings, int dayOfBirth) {
@@ -132,5 +135,19 @@ public class Animal implements WorldElement {
         return childrenCount;
     }
 
+    public void setParent1(Animal parent1) {
+        this.parent1 = parent1;
+    }
 
+    public void setParent2(Animal parent2) {
+        this.parent2 = parent2;
+    }
+
+    public void setGenes(int[] genes) {
+        this.genes = genes;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
 }

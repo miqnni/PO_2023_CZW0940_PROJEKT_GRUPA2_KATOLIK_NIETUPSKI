@@ -83,14 +83,14 @@ public class AbstractWorldMap implements WorldMap {
 //            }
 //        }
         int howManyPlantsToGrow = settings.getNewPlantsPerDay();
+        if (getEmptyFieldCount() < howManyPlantsToGrow) {
+            howManyPlantsToGrow = getEmptyFieldCount();
+        }
         growPlantsInRandomFields(howManyPlantsToGrow);
-
 
     }
 
     public void growPlantsInRandomFields(int plantCnt) {
-
-
 
         int successCnt = 0;
         while (successCnt < plantCnt) {
@@ -134,7 +134,7 @@ public class AbstractWorldMap implements WorldMap {
                 nextAnimalList.add(animal);
             }
         }
-        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
+//        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
     }
 
     @Override
@@ -256,7 +256,7 @@ public class AbstractWorldMap implements WorldMap {
             plants.remove(position);
 //            changeOneAnimalsEnergy(animal, settings.getEnergyPerPlant());
             animal.eatPlant();
-            System.out.println("ATTENTION!!! Animal ate plant at " + position);
+//            System.out.println("ATTENTION!!! Animal " + animal + " ate plant at " + position);
         }
     }
 
@@ -264,6 +264,193 @@ public class AbstractWorldMap implements WorldMap {
         List<Animal> currAnimalList = createCurrAnimalList();
         for (Animal currAnimal : currAnimalList) {
             animalEatsPlantIfPossible(currAnimal);
+        }
+    }
+
+    public Animal findBestAnimal (AnimalList animalList) {
+        List<Animal> animalsFromTheList = animalList.getAnimals();
+        // ASSUMPTION: this list is not empty
+
+        // find the animals with the most energy
+        int maxEnergy = -1;
+        List<Animal> greatestEnergyAnimals = new ArrayList<>();
+        for (Animal animal : animalsFromTheList) {
+            int currEnergy = animal.getEnergy();
+            if (currEnergy > maxEnergy) {
+                maxEnergy = currEnergy;
+                greatestEnergyAnimals = new ArrayList<>();
+                greatestEnergyAnimals.add(animal);
+            }
+            else if (currEnergy == maxEnergy) {
+                greatestEnergyAnimals.add(animal);
+            }
+        }
+        if (greatestEnergyAnimals.size() == 1) {
+            return greatestEnergyAnimals.get(0);
+        }
+
+        // among animals with the most energy, find the oldest animal
+        int maxDaysLived = -1;
+        List<Animal> oldestAnimals = new ArrayList<>();
+        for (Animal animal : greatestEnergyAnimals) {
+            int currDaysLived = animal.getDaysLived();
+            if (currDaysLived > maxDaysLived) {
+                maxDaysLived = currDaysLived;
+                oldestAnimals = new ArrayList<>();
+                oldestAnimals.add(animal);
+            }
+            else if (currDaysLived == maxDaysLived) {
+                oldestAnimals.add(animal);
+            }
+        }
+        if (oldestAnimals.size() == 1) {
+            return oldestAnimals.get(0);
+        }
+
+        // among the oldest animals, find the animal with the most children
+        int maxChildrenCount = -1;
+        List<Animal> greatestChildrenCountAnimals = new ArrayList<>();
+        for (Animal animal : oldestAnimals) {
+            int currChildrenCount = animal.getChildrenCount();
+            if (currChildrenCount > maxChildrenCount) {
+                maxChildrenCount = currChildrenCount;
+                greatestChildrenCountAnimals = new ArrayList<>();
+                greatestChildrenCountAnimals.add(animal);
+            }
+            else if (currChildrenCount == maxChildrenCount) {
+                greatestChildrenCountAnimals.add(animal);
+            }
+        }
+        if (greatestChildrenCountAnimals.size() == 1) {
+            return greatestChildrenCountAnimals.get(0);
+        }
+
+        // chose the random animal from the remaining list
+        Random rand = new Random();
+        int upperBound = greatestChildrenCountAnimals.size();
+        int randIdx = rand.nextInt(upperBound);
+        return greatestChildrenCountAnimals.get(randIdx);
+    }
+
+    public void plantConsumptionOnFieldIfPossible(Vector2d position) {
+        AnimalList animalsOnField = animals.get(position);
+        if (animalsOnField != null && plants.get(position) != null) {
+            Animal animal = animalsOnField.get(0);
+            if (animalsOnField.size() > 1) {
+                animal = findBestAnimal(animalsOnField);
+            }
+            plants.remove(position);
+            animal.eatPlant();
+//            System.out.println("ATTENTION!!! Animal ate plant at " + position);
+        }
+    }
+
+    public void massivePlantConsumption() {
+        List<Vector2d> fieldsToIterate = new ArrayList<>();
+        if (animals.size() < plants.size()) {
+            for (Map.Entry<Vector2d, AnimalList> entry : animals.entrySet()) {
+                fieldsToIterate.add(entry.getKey());
+            }
+        }
+        else {
+            for (Map.Entry<Vector2d, Plant> entry : plants.entrySet()) {
+                fieldsToIterate.add(entry.getKey());
+            }
+        }
+
+        // for every "field to iterate", call method plantConsumptionOnFieldIfPossible
+        for (Vector2d fieldToIterate : fieldsToIterate) {
+            plantConsumptionOnFieldIfPossible(fieldToIterate);
+        }
+    }
+
+    public void reproduceOnFieldIfPossible(Vector2d position, int currDay) {
+
+        // check if reproduction on the chosen field is possible (with the number of animals there)
+        if (animals.get(position) == null || animals.get(position).size() < 2) {
+            return;
+        }
+
+//        System.out.println("\t Attempting reproduction at " + position + "...");
+
+        // determine which pair of animals will reproduce
+        AnimalList animalList = animals.get(position);
+        Animal bestAnimal1 = findBestAnimal(animalList);
+        animalList.remove(bestAnimal1);
+        Animal bestAnimal2 = findBestAnimal(animalList);
+        animalList.add(bestAnimal1);
+
+        // check if the chosen pair of animals has enough energy to reproduce
+        // otherwise do not reproduce
+        if (bestAnimal1.getEnergy() < settings.getReproductionEnergyThreshold() || bestAnimal2.getEnergy() < settings.getReproductionEnergyThreshold()) {
+//            System.out.println("\t Too little energy!" + bestAnimal1.getEnergy() + " <-> " + bestAnimal2.getEnergy());
+            return;
+        }
+
+        // transfer energy (settings.energyUsedByParents) from parents to children
+
+
+        // determine how many genes of the first (stronger) animal will be inherited to the child
+        // other genes will be inherited from the second (weaker) animal
+        int energySum = bestAnimal1.getEnergy() + bestAnimal2.getEnergy();
+        double bestAnimal1EnergyShare = (double) bestAnimal1.getEnergy() / energySum;
+        int bestAnimal1InheritedGeneCount = (int) (bestAnimal1EnergyShare * settings.getGenomeLength());
+        int bestAnimal2InheritedGeneCount = settings.getGenomeLength() - bestAnimal1InheritedGeneCount;
+
+        // determine (random) if the stronger animal passes the genes on the left side or on the right side of the genotype
+        Random rand = new Random();
+        int randRes = rand.nextInt(2); // 0 -- left, 1 -- right
+//        System.out.println("\t taking " + bestAnimal1InheritedGeneCount + " genes from animal "+bestAnimal1+" and " + bestAnimal2InheritedGeneCount + " genes from animal "+bestAnimal2);
+//        System.out.println("\t\t side: " + randRes);
+
+        // create the genes of the child
+        int[] genes1 = bestAnimal1.getGenes();
+        int[] genes2 = bestAnimal2.getGenes();
+
+        int[] childGenes = new int[settings.getGenomeLength()];
+
+        if (randRes == 0) {
+            for (int i = 0; i < bestAnimal1InheritedGeneCount; i++) {
+                childGenes[i] = genes1[i];
+            }
+            for (int i = bestAnimal1InheritedGeneCount; i < settings.getGenomeLength(); i++) {
+                childGenes[i] = genes2[i];
+            }
+        }
+        else {
+            for (int i = 0; i < bestAnimal2InheritedGeneCount; i++) {
+                childGenes[i] = genes2[i];
+            }
+            for (int i = bestAnimal2InheritedGeneCount; i < settings.getGenomeLength(); i++) {
+                childGenes[i] = genes1[i];
+            }
+        }
+
+        // create the child (new Animal) of the animals that have reproduced
+        Animal child = new Animal(position, settings, currDay);
+        child.setParent1(bestAnimal1);
+        child.setParent2(bestAnimal2);
+        child.setGenes(childGenes);
+        bestAnimal1.changeEnergy((-1)*settings.getEnergyUsedByParents());
+        bestAnimal2.changeEnergy((-1)*settings.getEnergyUsedByParents());
+        child.setEnergy(2*settings.getEnergyUsedByParents());
+
+        place(child);
+        // mutations
+
+        // ...
+
+        // end
+//        System.out.println("\t Reproduction successful!");
+    }
+
+    public void reproduceOnEveryPossibleField(int currDay) {
+        List<Vector2d> fieldsToIterate = new ArrayList<>();
+        for (Map.Entry<Vector2d, AnimalList> entry : animals.entrySet()) {
+            fieldsToIterate.add(entry.getKey());
+        }
+        for (Vector2d fieldToIterate : fieldsToIterate) {
+            reproduceOnFieldIfPossible(fieldToIterate, currDay);
         }
     }
 
@@ -283,7 +470,14 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public int getAnimalCount() {
-        return animals.size();
+        int res = 0;
+
+        for (Map.Entry<Vector2d, AnimalList> entry : animals.entrySet()) {
+            AnimalList currList = entry.getValue();
+            res += currList.size();
+        }
+
+        return res;
     }
 
     public int getPlantCount() {
@@ -291,7 +485,7 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public int getEmptyFieldCount() {
-        return ((width - 1) * (height - 1)) - getAnimalCount() - getPlantCount();
+        return ((width) * (height)) - getAnimalCount() - getPlantCount();
     }
 
     public double getAvgEnergy() {
