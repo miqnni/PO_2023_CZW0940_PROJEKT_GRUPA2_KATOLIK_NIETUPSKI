@@ -75,8 +75,23 @@ public class Animal implements WorldElement {
     }
 
     public void moveForward(MoveValidator mValid) {
+        int boundX = settings.getMapWidth();
+        int boundY = settings.getMapHeight();
         Vector2d toAdd = MapDirection.toUnitVector(orientation);
         Vector2d newLocation = position.add(toAdd);
+        if (newLocation.getX() >= boundX) {
+            newLocation = new Vector2d(0, newLocation.getY());
+        }
+        else if (newLocation.getX() < 0) {
+            newLocation = new Vector2d(boundX - 1, newLocation.getY());
+        }
+
+        if (newLocation.getY() >= boundY || newLocation.getY() < 0) {
+            newLocation = new Vector2d(newLocation.getX(), position.getY());
+            turn(4);
+        }
+
+
         if (mValid.canMoveTo(newLocation)) {
             position = newLocation;
         }

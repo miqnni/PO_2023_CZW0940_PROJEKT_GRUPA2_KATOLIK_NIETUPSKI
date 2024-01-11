@@ -134,7 +134,7 @@ public class AbstractWorldMap implements WorldMap {
                 nextAnimalList.add(animal);
             }
         }
-//        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
+        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
     }
 
     @Override
@@ -435,13 +435,75 @@ public class AbstractWorldMap implements WorldMap {
         bestAnimal2.changeEnergy((-1)*settings.getEnergyUsedByParents());
         child.setEnergy(2*settings.getEnergyUsedByParents());
 
-        place(child);
         // mutations
-
-        // ...
+        if (settings.getMutationType() == 2) {
+            mutateByReplacementOrSwap(child);
+        }
+        else {
+            mutateByReplacement(child);
+        }
 
         // end
+        place(child);
 //        System.out.println("\t Reproduction successful!");
+    }
+
+    public void mutateByReplacement(Animal animal) {
+        // select a random number of genes in [minMutationCount; maxMutationCount]
+        Random rand = new Random();
+        int upperBound = settings.getMaxMutationCount();
+        int lowerBound = settings.getMinMutationCount();
+        int genesToAlter = rand.nextInt(upperBound + 1 - lowerBound) + lowerBound;
+
+        // select which genes will be altered and alter them
+        int allGenesCnt = settings.getGenomeLength();
+        for (int i = 0; i < genesToAlter; i++) {
+            Random rand2 = new Random();
+            int oldGeneIdx = rand2.nextInt(allGenesCnt);
+            int newGeneVal = rand2.nextInt(8);
+            int[] animalGenes = animal.getGenes();
+            System.out.println("Animal " + animal + " has changed its gene (#" + oldGeneIdx + ") " + animalGenes[oldGeneIdx] + " -> " + newGeneVal);
+            animalGenes[oldGeneIdx] = newGeneVal;
+            animal.setGenes(animalGenes);
+        }
+    }
+
+    public void mutateByReplacementOrSwap(Animal animal) {
+        // select a random number of genes in [minMutationCount; maxMutationCount]
+        Random rand = new Random();
+        int upperBound = settings.getMaxMutationCount();
+        int lowerBound = settings.getMinMutationCount();
+        int genesToAlter = rand.nextInt(upperBound + 1 - lowerBound) + lowerBound;
+
+        // select which genes will be altered and alter them
+        int allGenesCnt = settings.getGenomeLength();
+        for (int i = 0; i < genesToAlter; i++) {
+            // select random gene
+            Random rand2 = new Random();
+            int oldGeneIdx = rand2.nextInt(allGenesCnt);
+
+            // select which mutation type will take place
+            // 0 -> replacement
+            // 1 -> swap
+            Random rand3 = new Random();
+            int singleMutationType = rand3.nextInt(2);
+            int[] animalGenes = animal.getGenes();
+
+            if (singleMutationType == 1) {
+                int geneToReplaceWithIdx = rand2.nextInt(allGenesCnt);
+                int geneVal1 = animalGenes[oldGeneIdx];
+                int geneVal2 = animalGenes[geneToReplaceWithIdx];
+                animalGenes[geneToReplaceWithIdx] = geneVal1;
+                animalGenes[oldGeneIdx] = geneVal2;
+                System.out.println("Animal " + animal + " has swapped its gene (#" + oldGeneIdx + ") <-> (#" + geneToReplaceWithIdx + ")" );
+            }
+            else {
+                int newGeneVal = rand2.nextInt(8);
+                System.out.println("Animal " + animal + " has changed its gene (#" + oldGeneIdx + ") " + animalGenes[oldGeneIdx] + " -> " + newGeneVal);
+                animalGenes[oldGeneIdx] = newGeneVal;
+                animal.setGenes(animalGenes);
+            }
+        }
     }
 
     public void reproduceOnEveryPossibleField(int currDay) {
@@ -550,5 +612,9 @@ public class AbstractWorldMap implements WorldMap {
             }
         }
         return mostFrequentGene;
+    }
+
+    void setAllAnimalsGenesToZero() {
+
     }
 }

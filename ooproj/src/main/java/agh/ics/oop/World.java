@@ -8,21 +8,22 @@ import java.util.List;
 public class World {
     public static void main(String[] args) {
         Settings testSettings = new Settings(
-                2,
-                5,
+                15,
+                15,
+                0,
                 7,
-                7,
-                4,
+                0,
                 -1,
-                3,
+                1,
                 50,
                 10,
                 4,
-                -1,
-                -1,
-                -1,
-                10,
-                -1,
+                0,
+                1,
+                2,
+                2,
+                // mapType: 0 or 3
+                0,
                 50,
                 0.0015);
 
@@ -35,8 +36,7 @@ public class World {
 //        System.out.println(myList.toString());
 
         //TODO
-        //  warianty mapy
-        //  wariamty genow
+        //  warianty mapy (i zalesiony równik)
         //  wszystko ma dzialac
         //  interfejs
 
