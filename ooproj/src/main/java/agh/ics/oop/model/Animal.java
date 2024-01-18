@@ -25,10 +25,16 @@ public class Animal implements WorldElement {
     private Animal parent1;
     private Animal parent2;
 
-    private int OZNACZENIE;
+    private char OZNACZENIE;
 
     public Animal(Vector2d position, Settings settings, int dayOfBirth) {
-        this.orientation = MapDirection.NORTH;
+
+        Random rand = new Random();
+
+        // LOSOWA ORIENTACJA
+        MapDirection[] directions = MapDirection.values();
+        this.orientation = directions[rand.nextInt(directions.length)];
+
         this.position = position;
         this.daysLived = 0;
         this.energy = settings.getStartAnimalEnergy();
@@ -37,17 +43,18 @@ public class Animal implements WorldElement {
 //        this.genome = new Genome(settings);
         this.genes = new int[settings.getGenomeLength()];
         for (int i = 0; i < settings.getGenomeLength(); i++) {
-            Random rand = new Random();
             int newGene = rand.nextInt(8);
             genes[i] = newGene;
         }
-        this.startGeneId = 0;
+
+        // LOSOWY GEN STARTOWY
+        this.startGeneId = rand.nextInt(settings.getGenomeLength());
+
         this.childrenCount = 0;
         this.plantsEaten = 0;
         this.settings = settings;
 
-        Random random = new Random();
-        this.OZNACZENIE = random.nextInt(10);
+        this.OZNACZENIE = (char)(rand.nextInt(90 - 65 + 1) + 65);
     }
 
     @Override

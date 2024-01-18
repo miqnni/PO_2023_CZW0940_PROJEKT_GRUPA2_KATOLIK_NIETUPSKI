@@ -13,12 +13,22 @@ public class AbstractWorldMap implements WorldMap {
 
     protected Map<Integer[], Integer> genomeCount = new HashMap<>();
 
-    protected double[][] plantGrowthChance;
+//    protected double[][] plantGrowthChance;
 
     protected UUID mapId;
 
     private final int width;
     private final int height;
+
+    private final int minEquatorHeight;
+
+    private final int maxEquatorHeight;
+
+    private int freeEquatorFields;
+    private int takenEquatorFields;
+
+    private int freeNonEquatorFields;
+    private int takenNonEquatorFields;
 
 //    private final int genomeLength;
 
@@ -29,16 +39,25 @@ public class AbstractWorldMap implements WorldMap {
         this.mapId = UUID.randomUUID();
         this.width = settings.getMapWidth();
         this.height = settings.getMapHeight();
-        this.plantGrowthChance = new double[width][height];
-        for (int xi = 0; xi < width; xi++) {
-            for (int yi = 0; yi < height; yi++) {
-                plantGrowthChance[xi][yi] = settings.getDefaultPlantGrowthChance();
-            }
-        }
+//        this.plantGrowthChance = new double[width][height];
+//        for (int xi = 0; xi < width; xi++) {
+//            for (int yi = 0; yi < height; yi++) {
+//                plantGrowthChance[xi][yi] = settings.getDefaultPlantGrowthChance();
+//            }
+//        }
 //        this.genomeLength = settings.getGenomeLength();
         this.settings = settings;
         this.livingAnimals = new ArrayList<>();
         this.deadAnimals = new ArrayList<>();
+
+        this.minEquatorHeight = (int) (0.4 * height);
+        this.maxEquatorHeight = (int) (0.6 * height);
+
+        this.freeEquatorFields = width * (maxEquatorHeight - minEquatorHeight);
+        this.takenEquatorFields = 0;
+
+        this.freeNonEquatorFields = (width * height) - freeEquatorFields;
+        this.takenNonEquatorFields = 0;
     }
 
 
@@ -83,23 +102,70 @@ public class AbstractWorldMap implements WorldMap {
 //            }
 //        }
         int howManyPlantsToGrow = settings.getNewPlantsPerDay();
-        if (getEmptyFieldCount() < howManyPlantsToGrow) {
-            howManyPlantsToGrow = getEmptyFieldCount();
-        }
+//        if (getEmptyFieldCount() < howManyPlantsToGrow) {
+//            howManyPlantsToGrow = getEmptyFieldCount();
+//        }
         growPlantsInRandomFields(howManyPlantsToGrow);
 
     }
 
-    public void growPlantsInRandomFields(int plantCnt) {
-
-        int successCnt = 0;
-        while (successCnt < plantCnt) {
-            Vector2d currRandPos = randomField();
-            if (plants.get(currRandPos) == null) {
-                growPlant(currRandPos);
-                successCnt++;
+    public boolean isEquatorOvergrown() {
+        for (int i = minEquatorHeight; i < maxEquatorHeight; i++) {
+            for (int j = 0; j < width; j++) {
+                Vector2d fieldToCheck = new Vector2d(j, i);
+                if (plants.get(fieldToCheck) == null) return false;
             }
         }
+        return true;
+    }
+
+    public void growPlantEquator() {
+        boolean growthSuccessful = false;
+        while (!growthSuccessful) {
+            Vector2d currRandPos = randomFieldEquator();
+            if (plants.get(currRandPos) == null) {
+                growPlant(currRandPos);
+                freeEquatorFields--;
+                takenEquatorFields++;
+                growthSuccessful = true;
+            }
+        }
+    }
+
+    public void growPlantNonEquator() {
+        boolean growthSuccessful = false;
+        while (!growthSuccessful) {
+            Vector2d currRandPos = randomFieldNonEquator();
+            if (plants.get(currRandPos) == null) {
+                growPlant(currRandPos);
+                freeNonEquatorFields--;
+                takenNonEquatorFields++;
+                growthSuccessful = true;
+            }
+        }
+    }
+
+    public void growPlantsInRandomFields(int plantCnt) {
+
+        Random rand = new Random();
+        int growthLocationResult = rand.nextInt(4);
+
+        for (int i = 0; i < plantCnt; i++) {
+            if ((growthLocationResult > 0 || freeNonEquatorFields == 0) && freeEquatorFields > 0)  {
+                // grow within equator
+                growPlantEquator();
+            }
+            else if (freeNonEquatorFields > 0) {
+                // grow within normal fields
+                growPlantNonEquator();
+            }
+            else {
+                // don't grow
+                break;
+            }
+        }
+
+
     }
 
     @Override
@@ -522,6 +588,29 @@ public class AbstractWorldMap implements WorldMap {
         int randY = rand1.nextInt(height);
         return new Vector2d(randX, randY);
     }
+
+    public Vector2d randomFieldEquator() {
+        Random rand1 = new Random();
+        int randX = rand1.nextInt(width);
+        int randY = rand1.nextInt(maxEquatorHeight - minEquatorHeight) + minEquatorHeight;
+        return new Vector2d(randX, randY);
+    }
+
+    public Vector2d randomFieldNonEquator() {
+        Random rand1 = new Random();
+        int aboveEquator = rand1.nextInt(2);
+        int randX = rand1.nextInt(width);
+        int randY;
+
+        if (aboveEquator == 1) {
+            randY = rand1.nextInt(height - maxEquatorHeight) + maxEquatorHeight;
+        }
+        else {
+            randY = rand1.nextInt(minEquatorHeight);
+        }
+        return new Vector2d(randX, randY);
+    }
+
 
     public Map<Vector2d, AnimalList> getAnimals() {
         return animals;
