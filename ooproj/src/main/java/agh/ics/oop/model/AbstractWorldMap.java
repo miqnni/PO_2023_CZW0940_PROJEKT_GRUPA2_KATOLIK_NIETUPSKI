@@ -316,22 +316,20 @@ public class AbstractWorldMap implements WorldMap {
         }
     }
 
-    public void animalEatsPlantIfPossible(Animal animal) {
-        Vector2d position = animal.getPosition();
-        if (plants.get(position) != null) {
-            plants.remove(position);
-//            changeOneAnimalsEnergy(animal, settings.getEnergyPerPlant());
-            animal.eatPlant();
-//            System.out.println("ATTENTION!!! Animal " + animal + " ate plant at " + position);
-        }
-    }
+//    public void animalEatsPlantIfPossible(Animal animal) {
+//        Vector2d position = animal.getPosition();
+//        if (plants.get(position) != null) {
+//            plants.remove(position);
+//            animal.eatPlant();
+//        }
+//    }
 
-    public void allAnimalsEatPlantIfPossible() {
-        List<Animal> currAnimalList = createCurrAnimalList();
-        for (Animal currAnimal : currAnimalList) {
-            animalEatsPlantIfPossible(currAnimal);
-        }
-    }
+//    public void allAnimalsEatPlantIfPossible() {
+//        List<Animal> currAnimalList = createCurrAnimalList();
+//        for (Animal currAnimal : currAnimalList) {
+//            animalEatsPlantIfPossible(currAnimal);
+//        }
+//    }
 
     public Animal findBestAnimal (AnimalList animalList) {
         List<Animal> animalsFromTheList = animalList.getAnimals();
@@ -405,7 +403,7 @@ public class AbstractWorldMap implements WorldMap {
             if (animalsOnField.size() > 1) {
                 animal = findBestAnimal(animalsOnField);
             }
-            plants.remove(position);
+            removePlant(position);
             animal.eatPlant();
 //            System.out.println("ATTENTION!!! Animal ate plant at " + position);
         }
@@ -703,7 +701,31 @@ public class AbstractWorldMap implements WorldMap {
         return mostFrequentGene;
     }
 
-    void setAllAnimalsGenesToZero() {
+    public void removePlant(Vector2d position) {
+        plants.remove(position);
+        if (minEquatorHeight <= position.getY() && position.getY() < maxEquatorHeight) {
+            freeEquatorFields++;
+            takenEquatorFields--;
+        }
+        else {
+            freeNonEquatorFields++;
+            takenNonEquatorFields--;
+        }
+    }
 
+    public int getFreeEquatorFields() {
+        return freeEquatorFields;
+    }
+
+    public int getFreeNonEquatorFields() {
+        return freeNonEquatorFields;
+    }
+
+    public int getTakenEquatorFields() {
+        return takenEquatorFields;
+    }
+
+    public int getTakenNonEquatorFields() {
+        return takenNonEquatorFields;
     }
 }

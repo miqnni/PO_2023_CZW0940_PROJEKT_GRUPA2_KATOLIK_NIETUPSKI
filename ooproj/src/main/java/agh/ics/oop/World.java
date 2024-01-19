@@ -12,7 +12,7 @@ public class World {
                 5,
                 5,
                 7,
-                5,
+                1,
                 -1,
                 1,
                 50,
@@ -23,7 +23,7 @@ public class World {
                 2,
                 2,
                 // mapType: 0 or 3
-                0,
+                3,
                 50,
                 0.0015);
 
@@ -39,6 +39,9 @@ public class World {
         //  warianty mapy
         //  wszystko ma dzialac
         //  interfejs
+        //  mozliwosc zatrzymania symulacji
+        //  mozliwosc klinkiecia i trackowania zwierzaka
+        //  zapis wybranych ustawien (preset)
 
     }
 }

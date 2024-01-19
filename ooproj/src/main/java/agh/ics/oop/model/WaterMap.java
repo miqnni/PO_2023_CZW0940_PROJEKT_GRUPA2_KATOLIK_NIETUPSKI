@@ -115,15 +115,15 @@ public class WaterMap extends AbstractWorldMap {
         super.removeDeadAnimals(dayNo);
     }
 
-    @Override
-    public void animalEatsPlantIfPossible(Animal animal) {
-        super.animalEatsPlantIfPossible(animal);
-    }
-
-    @Override
-    public void allAnimalsEatPlantIfPossible() {
-        super.allAnimalsEatPlantIfPossible();
-    }
+//    @Override
+//    public void animalEatsPlantIfPossible(Animal animal) {
+//        super.animalEatsPlantIfPossible(animal);
+//    }
+//
+//    @Override
+//    public void allAnimalsEatPlantIfPossible() {
+//        super.allAnimalsEatPlantIfPossible();
+//    }
 
     @Override
     public Animal findBestAnimal(AnimalList animalList) {
@@ -225,8 +225,5 @@ public class WaterMap extends AbstractWorldMap {
         return super.findMostFrequentGene();
     }
 
-    @Override
-    void setAllAnimalsGenesToZero() {
-        super.setAllAnimalsGenesToZero();
-    }
+
 }

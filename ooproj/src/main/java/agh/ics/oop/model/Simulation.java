@@ -5,56 +5,72 @@ import java.util.List;
 import java.util.Map;
 
 public class Simulation {
-    private Settings settings;
+    private final Settings settings;
+
+    private final AbstractWorldMap testMap;
+
     public Simulation(Settings settings) {
         this.settings = settings;
+        if (settings.getMapType() == 3) {
+            this.testMap = new WaterMap(settings);
+        }
+        else {
+            this.testMap = new AbstractWorldMap(settings);
+        }
     }
 
     public void run() {
-        AbstractWorldMap testMap = new AbstractWorldMap(settings);
+//        AbstractWorldMap testMap = new AbstractWorldMap(settings);
         for (int i = 0; i < settings.getStartAnimalCount(); i++) {
             Animal currAnimal = new Animal(testMap.randomField(), settings, 0);
             testMap.place(currAnimal);
         }
         testMap.growPlantsInRandomFields(settings.getStartPlantCount());
-//        System.out.println("INITIAL MAP");
-//        System.out.println(testMap);
-//        System.out.println("\n\n\n");
         for (int dayCnt = 0; dayCnt < settings.getDurationInDays(); dayCnt++) {
             letOneDayPass(testMap, dayCnt);
         }
     }
 
-    private void letOneDayPass(AbstractWorldMap testMap, int currDayVal) {
+    private void letOneDayPass(AbstractWorldMap selectedMap, int currDayVal) {
         // day
-        testMap.moveAllAnimalsByGene(currDayVal);
-//        testMap.allAnimalsEatPlantIfPossible();
-        testMap.massivePlantConsumption();
-        testMap.reproduceOnEveryPossibleField(currDayVal);
+        selectedMap.growPlantMassive();  // MOD
+
+        selectedMap.moveAllAnimalsByGene(currDayVal);
+        selectedMap.massivePlantConsumption();
+        selectedMap.reproduceOnEveryPossibleField(currDayVal);
 
         // night
-        testMap.changeAllAnimalsEnergy(-1);
-        testMap.removeDeadAnimals(currDayVal);
-        testMap.increaseDayCountOfAllAnimals();
-        testMap.growPlantMassive();
+        selectedMap.changeAllAnimalsEnergy(-1);
+        selectedMap.removeDeadAnimals(currDayVal);
+        selectedMap.increaseDayCountOfAllAnimals();
+//        selectedMap.growPlantMassive();
 
-        printStats(testMap, currDayVal);
+        printStats(selectedMap, currDayVal);
     }
 
-    private void printStats(AbstractWorldMap testMap, int currDayVal) {
+    private void letOneDayPassWithWater(WaterMap selectedMap, int currDayVal) {
+        // metody, ktore zajmuja sie woda
+        // ...
+
+        letOneDayPass(selectedMap, currDayVal);
+    }
+
+    private void printStats(AbstractWorldMap selectedMap, int currDayVal) {
         System.out.println("DAY " + currDayVal);
-        System.out.println(testMap);
-        List<Animal> currAnimalList = testMap.createCurrAnimalList();
+        System.out.println(selectedMap);
+        List<Animal> currAnimalList = selectedMap.createCurrAnimalList();
         for (Animal currAnimal : currAnimalList) {
             System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy() + " days=" + currAnimal.getDaysLived() + " GENES: " + Arrays.toString(currAnimal.getGenes()));
         }
-        System.out.println("Animal count: " + testMap.getAnimalCount());
-        System.out.println("Plant count: " + testMap.getPlantCount());
-        System.out.println("Empty Field count: " + testMap.getEmptyFieldCount());
-        System.out.println("Avg Energy: " + testMap.getAvgEnergy());
-        System.out.println("Avg Lifespan: " + testMap.getAvgLifespanOfDeadAnimals());
-        System.out.println("Avg Children count: " + testMap.getAvgChildrenCount());
-        System.out.println("Most frequent gene: " + testMap.findMostFrequentGene());
+        System.out.println("Animal count: " + selectedMap.getAnimalCount());
+        System.out.println("Plant count: " + selectedMap.getPlantCount());
+        System.out.println("Empty Field count: " + selectedMap.getEmptyFieldCount());
+        System.out.printf("\t[FREE/ALL] Equator     : [%d/%d]%n", selectedMap.getFreeEquatorFields(), selectedMap.getFreeEquatorFields() + selectedMap.getTakenEquatorFields());
+        System.out.printf("\t[FREE/ALL] Non-Equator : [%d/%d]%n", selectedMap.getFreeNonEquatorFields(), selectedMap.getFreeNonEquatorFields() + selectedMap.getTakenNonEquatorFields());
+        System.out.println("Avg Energy: " + selectedMap.getAvgEnergy());
+        System.out.println("Avg Lifespan: " + selectedMap.getAvgLifespanOfDeadAnimals());
+        System.out.println("Avg Children count: " + selectedMap.getAvgChildrenCount());
+        System.out.println("Most frequent gene: " + selectedMap.findMostFrequentGene());
         System.out.println("\n\n\n");
     }
 }
