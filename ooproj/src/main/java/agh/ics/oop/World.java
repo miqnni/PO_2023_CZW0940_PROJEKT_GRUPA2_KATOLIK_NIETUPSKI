@@ -10,11 +10,11 @@ public class World {
         Settings testSettings = new Settings(
                 5,
                 5,
-                5,
+                0,
                 7,
-                1,
+                0,
                 -1,
-                1,
+                5,
                 50,
                 10,
                 4,
@@ -36,12 +36,12 @@ public class World {
 //        System.out.println(myList.toString());
 
         //TODO
-        //  warianty mapy
-        //  wszystko ma dzialac
         //  interfejs
         //  mozliwosc zatrzymania symulacji
         //  mozliwosc klinkiecia i trackowania zwierzaka
         //  zapis wybranych ustawien (preset)
+        //  mozliwosc odpalenia wielu symulacji naraz
+        //  testy
 
     }
 }

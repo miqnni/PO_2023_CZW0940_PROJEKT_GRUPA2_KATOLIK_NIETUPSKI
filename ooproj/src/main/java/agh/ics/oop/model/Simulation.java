@@ -27,7 +27,10 @@ public class Simulation {
         }
         testMap.growPlantsInRandomFields(settings.getStartPlantCount());
         for (int dayCnt = 0; dayCnt < settings.getDurationInDays(); dayCnt++) {
-            letOneDayPass(testMap, dayCnt);
+            if (settings.getMapType() == 3) {
+                letOneDayPassWithWater((WaterMap) testMap, dayCnt);
+            }
+            else letOneDayPass(testMap, dayCnt);
         }
     }
 
@@ -52,7 +55,11 @@ public class Simulation {
         // metody, ktore zajmuja sie woda
         // ...
 
+//        System.out.println("GROWING WATER TO RANGE " + selectedMap.getWaterRange() + "/" + selectedMap.getMaxWaterRange());
+
         letOneDayPass(selectedMap, currDayVal);
+        if (currDayVal <= 25) selectedMap.growWater();
+        else selectedMap.shrinkWater();
     }
 
     private void printStats(AbstractWorldMap selectedMap, int currDayVal) {
@@ -71,6 +78,16 @@ public class Simulation {
         System.out.println("Avg Lifespan: " + selectedMap.getAvgLifespanOfDeadAnimals());
         System.out.println("Avg Children count: " + selectedMap.getAvgChildrenCount());
         System.out.println("Most frequent gene: " + selectedMap.findMostFrequentGene());
+        printMostPopularGenotypes(testMap);
         System.out.println("\n\n\n");
+    }
+
+    private void printMostPopularGenotypes(AbstractWorldMap selectedMap) {
+
+        for (Map.Entry<Genome, Integer> entry : testMap.getGenomeCount().entrySet()) {
+            Genome currGenome = entry.getKey();
+            Integer currInteger = entry.getValue();
+            System.out.println(currGenome + ": " + currInteger);
+        }
     }
 }

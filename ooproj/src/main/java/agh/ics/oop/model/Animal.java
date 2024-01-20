@@ -16,6 +16,8 @@ public class Animal implements WorldElement {
 //    private Genome genome;
     private int[] genes;
 
+    private Genome genome;
+
     private int startGeneId;
 
     private int plantsEaten;
@@ -24,6 +26,8 @@ public class Animal implements WorldElement {
 
     private Animal parent1;
     private Animal parent2;
+
+    private AbstractWorldMap mapWhereItLives;
 
     private char OZNACZENIE;
 
@@ -40,8 +44,8 @@ public class Animal implements WorldElement {
         this.energy = settings.getStartAnimalEnergy();
         this.dayOfBirth = dayOfBirth;
         this.alive = true;
-//        this.genome = new Genome(settings);
         this.genes = new int[settings.getGenomeLength()];
+        this.genome = new Genome(genes);
         for (int i = 0; i < settings.getGenomeLength(); i++) {
             int newGene = rand.nextInt(8);
             genes[i] = newGene;
@@ -86,6 +90,9 @@ public class Animal implements WorldElement {
         int boundY = settings.getMapHeight();
         Vector2d toAdd = MapDirection.toUnitVector(orientation);
         Vector2d newLocation = position.add(toAdd);
+
+
+
         if (newLocation.getX() >= boundX) {
             newLocation = new Vector2d(0, newLocation.getY());
         }
@@ -93,15 +100,27 @@ public class Animal implements WorldElement {
             newLocation = new Vector2d(boundX - 1, newLocation.getY());
         }
 
-        if (newLocation.getY() >= boundY || newLocation.getY() < 0) {
-            newLocation = new Vector2d(newLocation.getX(), position.getY());
-            turn(4);
+        if (mapWhereItLives.isOccupiedByWater(newLocation)) {
+//            System.out.println("\t" + this + " Unable to move! " + newLocation);
+            return;
         }
 
+        if (newLocation.getY() >= boundY || newLocation.getY() < 0) {
+            newLocation = new Vector2d(newLocation.getX(), position.getY());
+            if (mapWhereItLives.isOccupiedByWater(newLocation)) {
+//                System.out.println("\t" + this + " Unable to move! " + newLocation);
+                return;
+            }
+            turn(4);
+        }
 
         if (mValid.canMoveTo(newLocation)) {
             position = newLocation;
         }
+    }
+
+    public void undoMove(Vector2d oldLocation) {
+        position = oldLocation;
     }
 
     public void turn(int timesTurned) {
@@ -167,9 +186,18 @@ public class Animal implements WorldElement {
 
     public void setGenes(int[] genes) {
         this.genes = genes;
+        this.genome = new Genome(genes);
     }
 
     public void setEnergy(int energy) {
         this.energy = energy;
+    }
+
+    public void setMapWhereItLives(AbstractWorldMap mapWhereItLives) {
+        this.mapWhereItLives = mapWhereItLives;
+    }
+
+    public Genome getGenome() {
+        return genome;
     }
 }

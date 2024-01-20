@@ -8,27 +8,27 @@ public class AbstractWorldMap implements WorldMap {
     protected Map<Vector2d, AnimalList> animals = new HashMap<>();
     protected Map<Vector2d, Plant> plants = new HashMap<>();
 
-    private List<Animal> deadAnimals;
-    private List<Animal> livingAnimals;
+    protected List<Animal> deadAnimals;
+    protected List<Animal> livingAnimals;
 
-    protected Map<Integer[], Integer> genomeCount = new HashMap<>();
+    protected Map<Genome, Integer> genomeCount = new HashMap<>();
 
 //    protected double[][] plantGrowthChance;
 
     protected UUID mapId;
 
-    private final int width;
-    private final int height;
+    protected final int width;
+    protected final int height;
 
-    private final int minEquatorHeight;
+    protected final int minEquatorHeight;
 
-    private final int maxEquatorHeight;
+    protected final int maxEquatorHeight;
 
-    private int freeEquatorFields;
-    private int takenEquatorFields;
+    protected int freeEquatorFields;
+    protected int takenEquatorFields;
 
-    private int freeNonEquatorFields;
-    private int takenNonEquatorFields;
+    protected int freeNonEquatorFields;
+    protected int takenNonEquatorFields;
 
 //    private final int genomeLength;
 
@@ -80,6 +80,8 @@ public class AbstractWorldMap implements WorldMap {
         }
 
         livingAnimals.add(animal);
+        animal.setMapWhereItLives(this);
+        addGenome(animal.getGenome());
 
 
 //        System.out.println("Animal placed at " + animalPos);
@@ -200,7 +202,7 @@ public class AbstractWorldMap implements WorldMap {
                 nextAnimalList.add(animal);
             }
         }
-        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
+//        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
     }
 
     @Override
@@ -218,7 +220,6 @@ public class AbstractWorldMap implements WorldMap {
         if (animals.get(position) != null )
             return animals.get(position);
         return plants.get(position);
-
     }
 
     @Override
@@ -289,20 +290,16 @@ public class AbstractWorldMap implements WorldMap {
     public void removeDeadAnimals(int dayNo) {
         Iterator<Animal> iterator = livingAnimals.iterator();
 
-//        List<Animal> animalsToCheck = createCurrAnimalList();
         while (iterator.hasNext()) {
             Animal currAnimal = iterator.next();
             if (!currAnimal.isAlive()) {
                 currAnimal.setDayOfDeath(dayNo);
                 iterator.remove();
                 deadAnimals.add(currAnimal);
-
-//                animals.remove(currAnimal.getPosition());
-
+                removeGenome(currAnimal.getGenome());
 
 
                 // animal removal procedure
-
                 Vector2d currPos = currAnimal.getPosition();
                 AnimalList currPosAnimalList = animals.get(currPos);
                 if (currPosAnimalList.size() == 1) {
@@ -332,68 +329,69 @@ public class AbstractWorldMap implements WorldMap {
 //    }
 
     public Animal findBestAnimal (AnimalList animalList) {
-        List<Animal> animalsFromTheList = animalList.getAnimals();
-        // ASSUMPTION: this list is not empty
-
-        // find the animals with the most energy
-        int maxEnergy = -1;
-        List<Animal> greatestEnergyAnimals = new ArrayList<>();
-        for (Animal animal : animalsFromTheList) {
-            int currEnergy = animal.getEnergy();
-            if (currEnergy > maxEnergy) {
-                maxEnergy = currEnergy;
-                greatestEnergyAnimals = new ArrayList<>();
-                greatestEnergyAnimals.add(animal);
-            }
-            else if (currEnergy == maxEnergy) {
-                greatestEnergyAnimals.add(animal);
-            }
-        }
-        if (greatestEnergyAnimals.size() == 1) {
-            return greatestEnergyAnimals.get(0);
-        }
-
-        // among animals with the most energy, find the oldest animal
-        int maxDaysLived = -1;
-        List<Animal> oldestAnimals = new ArrayList<>();
-        for (Animal animal : greatestEnergyAnimals) {
-            int currDaysLived = animal.getDaysLived();
-            if (currDaysLived > maxDaysLived) {
-                maxDaysLived = currDaysLived;
-                oldestAnimals = new ArrayList<>();
-                oldestAnimals.add(animal);
-            }
-            else if (currDaysLived == maxDaysLived) {
-                oldestAnimals.add(animal);
-            }
-        }
-        if (oldestAnimals.size() == 1) {
-            return oldestAnimals.get(0);
-        }
-
-        // among the oldest animals, find the animal with the most children
-        int maxChildrenCount = -1;
-        List<Animal> greatestChildrenCountAnimals = new ArrayList<>();
-        for (Animal animal : oldestAnimals) {
-            int currChildrenCount = animal.getChildrenCount();
-            if (currChildrenCount > maxChildrenCount) {
-                maxChildrenCount = currChildrenCount;
-                greatestChildrenCountAnimals = new ArrayList<>();
-                greatestChildrenCountAnimals.add(animal);
-            }
-            else if (currChildrenCount == maxChildrenCount) {
-                greatestChildrenCountAnimals.add(animal);
-            }
-        }
-        if (greatestChildrenCountAnimals.size() == 1) {
-            return greatestChildrenCountAnimals.get(0);
-        }
-
-        // chose the random animal from the remaining list
-        Random rand = new Random();
-        int upperBound = greatestChildrenCountAnimals.size();
-        int randIdx = rand.nextInt(upperBound);
-        return greatestChildrenCountAnimals.get(randIdx);
+        return animalList.findBestAnimal();
+//        List<Animal> animalsFromTheList = animalList.getAnimals();
+//        // ASSUMPTION: this list is not empty
+//
+//        // find the animals with the most energy
+//        int maxEnergy = -1;
+//        List<Animal> greatestEnergyAnimals = new ArrayList<>();
+//        for (Animal animal : animalsFromTheList) {
+//            int currEnergy = animal.getEnergy();
+//            if (currEnergy > maxEnergy) {
+//                maxEnergy = currEnergy;
+//                greatestEnergyAnimals = new ArrayList<>();
+//                greatestEnergyAnimals.add(animal);
+//            }
+//            else if (currEnergy == maxEnergy) {
+//                greatestEnergyAnimals.add(animal);
+//            }
+//        }
+//        if (greatestEnergyAnimals.size() == 1) {
+//            return greatestEnergyAnimals.get(0);
+//        }
+//
+//        // among animals with the most energy, find the oldest animal
+//        int maxDaysLived = -1;
+//        List<Animal> oldestAnimals = new ArrayList<>();
+//        for (Animal animal : greatestEnergyAnimals) {
+//            int currDaysLived = animal.getDaysLived();
+//            if (currDaysLived > maxDaysLived) {
+//                maxDaysLived = currDaysLived;
+//                oldestAnimals = new ArrayList<>();
+//                oldestAnimals.add(animal);
+//            }
+//            else if (currDaysLived == maxDaysLived) {
+//                oldestAnimals.add(animal);
+//            }
+//        }
+//        if (oldestAnimals.size() == 1) {
+//            return oldestAnimals.get(0);
+//        }
+//
+//        // among the oldest animals, find the animal with the most children
+//        int maxChildrenCount = -1;
+//        List<Animal> greatestChildrenCountAnimals = new ArrayList<>();
+//        for (Animal animal : oldestAnimals) {
+//            int currChildrenCount = animal.getChildrenCount();
+//            if (currChildrenCount > maxChildrenCount) {
+//                maxChildrenCount = currChildrenCount;
+//                greatestChildrenCountAnimals = new ArrayList<>();
+//                greatestChildrenCountAnimals.add(animal);
+//            }
+//            else if (currChildrenCount == maxChildrenCount) {
+//                greatestChildrenCountAnimals.add(animal);
+//            }
+//        }
+//        if (greatestChildrenCountAnimals.size() == 1) {
+//            return greatestChildrenCountAnimals.get(0);
+//        }
+//
+//        // chose the random animal from the remaining list
+//        Random rand = new Random();
+//        int upperBound = greatestChildrenCountAnimals.size();
+//        int randIdx = rand.nextInt(upperBound);
+//        return greatestChildrenCountAnimals.get(randIdx);
     }
 
     public void plantConsumptionOnFieldIfPossible(Vector2d position) {
@@ -526,7 +524,7 @@ public class AbstractWorldMap implements WorldMap {
             int oldGeneIdx = rand2.nextInt(allGenesCnt);
             int newGeneVal = rand2.nextInt(8);
             int[] animalGenes = animal.getGenes();
-            System.out.println("Animal " + animal + " has changed its gene (#" + oldGeneIdx + ") " + animalGenes[oldGeneIdx] + " -> " + newGeneVal);
+//            System.out.println("Animal " + animal + " has changed its gene (#" + oldGeneIdx + ") " + animalGenes[oldGeneIdx] + " -> " + newGeneVal);
             animalGenes[oldGeneIdx] = newGeneVal;
             animal.setGenes(animalGenes);
         }
@@ -559,11 +557,11 @@ public class AbstractWorldMap implements WorldMap {
                 int geneVal2 = animalGenes[geneToReplaceWithIdx];
                 animalGenes[geneToReplaceWithIdx] = geneVal1;
                 animalGenes[oldGeneIdx] = geneVal2;
-                System.out.println("Animal " + animal + " has swapped its gene (#" + oldGeneIdx + ") <-> (#" + geneToReplaceWithIdx + ")" );
+//                System.out.println("Animal " + animal + " has swapped its gene (#" + oldGeneIdx + ") <-> (#" + geneToReplaceWithIdx + ")" );
             }
             else {
                 int newGeneVal = rand2.nextInt(8);
-                System.out.println("Animal " + animal + " has changed its gene (#" + oldGeneIdx + ") " + animalGenes[oldGeneIdx] + " -> " + newGeneVal);
+//                System.out.println("Animal " + animal + " has changed its gene (#" + oldGeneIdx + ") " + animalGenes[oldGeneIdx] + " -> " + newGeneVal);
                 animalGenes[oldGeneIdx] = newGeneVal;
                 animal.setGenes(animalGenes);
             }
@@ -727,5 +725,34 @@ public class AbstractWorldMap implements WorldMap {
 
     public int getTakenNonEquatorFields() {
         return takenNonEquatorFields;
+    }
+
+    public boolean isOccupiedByWater(Vector2d position) {
+        return false;
+    }
+
+    public void addGenome(Genome genome) {
+        if (genomeCount.containsKey(genome)) {
+            genomeCount.put(genome, genomeCount.get(genome) + 1);
+        }
+        else {
+            genomeCount.put(genome, 1);
+        }
+    }
+
+    public void removeGenome(Genome genome) {
+        if (!genomeCount.containsKey(genome)) {
+            return;
+        }
+        else if (genomeCount.get(genome) > 1) {
+            genomeCount.put(genome, genomeCount.get(genome) - 1);
+        }
+        else {
+            genomeCount.remove(genome);
+        }
+    }
+
+    public Map<Genome, Integer> getGenomeCount() {
+        return genomeCount;
     }
 }
