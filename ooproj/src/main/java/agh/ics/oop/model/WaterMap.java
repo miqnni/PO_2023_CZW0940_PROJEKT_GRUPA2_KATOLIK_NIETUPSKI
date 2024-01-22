@@ -16,7 +16,7 @@ public class WaterMap extends AbstractWorldMap {
         placeWater(new Vector2d(0, 0));
         placeWater(new Vector2d(width - 1, height - 1));
         this.waterRange = 1;
-        this.maxWaterRange = min(width, height) - 2;
+        this.maxWaterRange = min(settings.getWaterRangeLimit(), min(width, height) - 2);
     }
 
     @Override

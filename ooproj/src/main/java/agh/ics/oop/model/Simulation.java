@@ -52,14 +52,18 @@ public class Simulation {
     }
 
     private void letOneDayPassWithWater(WaterMap selectedMap, int currDayVal) {
-        // metody, ktore zajmuja sie woda
-        // ...
-
-//        System.out.println("GROWING WATER TO RANGE " + selectedMap.getWaterRange() + "/" + selectedMap.getMaxWaterRange());
-
         letOneDayPass(selectedMap, currDayVal);
-        if (currDayVal <= 25) selectedMap.growWater();
-        else selectedMap.shrinkWater();
+
+        int tidePhase = ((int) (currDayVal / settings.getHalfCycleLength())) % 2;
+        // 0 -> water grows
+        // 1 -> water shrinks
+
+        if (tidePhase == 0) {
+            selectedMap.growWater();
+        }
+        else {
+            selectedMap.shrinkWater();
+        }
     }
 
     private void printStats(AbstractWorldMap selectedMap, int currDayVal) {

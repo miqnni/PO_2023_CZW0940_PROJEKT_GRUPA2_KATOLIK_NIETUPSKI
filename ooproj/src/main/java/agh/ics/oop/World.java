@@ -2,14 +2,11 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class World {
     public static void main(String[] args) {
         Settings testSettings = new Settings(
-                5,
-                5,
+                15,
+                15,
                 0,
                 7,
                 0,
@@ -25,7 +22,9 @@ public class World {
                 // mapType: 0 or 3
                 3,
                 50,
-                0.0015);
+                7,
+                3
+                );
 
         Simulation testSim = new Simulation(testSettings);
         testSim.run();

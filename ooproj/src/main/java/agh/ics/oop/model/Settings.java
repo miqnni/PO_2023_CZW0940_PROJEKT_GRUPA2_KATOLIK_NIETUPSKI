@@ -17,9 +17,11 @@ public class Settings {
     private int genomeLength;
     private int mapType;
     private int durationInDays;
-    private double defaultPlantGrowthChance;
+    private int halfCycleLength;
 
-    public Settings(int mapWidth, int mapHeight, int startPlantCount, int energyPerPlant, int newPlantsPerDay, int plantGrowthType, int startAnimalCount, int startAnimalEnergy, int reproductionEnergyThreshold, int energyUsedByParents, int minMutationCount, int maxMutationCount, int mutationType, int genomeLength, int mapType, int durationInDays, double defaultPlantGrowthChance) {
+    private int waterRangeLimit;
+
+    public Settings(int mapWidth, int mapHeight, int startPlantCount, int energyPerPlant, int newPlantsPerDay, int plantGrowthType, int startAnimalCount, int startAnimalEnergy, int reproductionEnergyThreshold, int energyUsedByParents, int minMutationCount, int maxMutationCount, int mutationType, int genomeLength, int mapType, int durationInDays, int halfCycleLength, int waterRangeLimit) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.startPlantCount = startPlantCount;
@@ -36,7 +38,8 @@ public class Settings {
         this.genomeLength = genomeLength;
         this.mapType = mapType;
         this.durationInDays = durationInDays;
-        this.defaultPlantGrowthChance = defaultPlantGrowthChance;
+        this.halfCycleLength = halfCycleLength;
+        this.waterRangeLimit = waterRangeLimit;
     }
 
     public int getMapWidth() {
@@ -103,7 +106,11 @@ public class Settings {
         return durationInDays;
     }
 
-    public double getDefaultPlantGrowthChance() {
-        return defaultPlantGrowthChance;
+    public int getHalfCycleLength() {
+        return halfCycleLength;
+    }
+
+    public int getWaterRangeLimit() {
+        return waterRangeLimit;
     }
 }
