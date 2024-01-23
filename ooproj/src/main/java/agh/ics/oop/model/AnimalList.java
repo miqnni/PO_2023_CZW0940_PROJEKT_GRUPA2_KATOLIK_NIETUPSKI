@@ -52,14 +52,16 @@ public class AnimalList implements WorldElement {
         int maxEnergy = -1;
         List<Animal> greatestEnergyAnimals = new ArrayList<>();
         for (Animal animal : animalsFromTheList) {
-            int currEnergy = animal.getEnergy();
-            if (currEnergy > maxEnergy) {
-                maxEnergy = currEnergy;
-                greatestEnergyAnimals = new ArrayList<>();
-                greatestEnergyAnimals.add(animal);
-            }
-            else if (currEnergy == maxEnergy) {
-                greatestEnergyAnimals.add(animal);
+            if (animal != null) {
+                int currEnergy = animal.getEnergy();
+                if (currEnergy > maxEnergy) {
+                    maxEnergy = currEnergy;
+                    greatestEnergyAnimals = new ArrayList<>();
+                    greatestEnergyAnimals.add(animal);
+                }
+                else if (currEnergy == maxEnergy) {
+                    greatestEnergyAnimals.add(animal);
+                }
             }
         }
         if (greatestEnergyAnimals.size() == 1) {

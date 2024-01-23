@@ -9,6 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+
 public class SimulationApp extends Application {
 
     @Override
@@ -42,6 +46,15 @@ public class SimulationApp extends Application {
         Simulation testSim = new Simulation(testSettings);
         testSim.addObserver(presenter);
         presenter.setSimulation(testSim);
+
+        ConsoleSimulationDisplay testConsole = new ConsoleSimulationDisplay();
+        testSim.addObserver(testConsole);
+
+        List<Simulation> testSimList = new ArrayList<>();
+        testSimList.add(testSim);
+        SimulationEngine e1 = new SimulationEngine(testSimList);
+        testSim.setParentEngine(e1);
+
 
         configureStage(primaryStage, viewRoot);
     }

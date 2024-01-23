@@ -200,4 +200,8 @@ public class Animal implements WorldElement {
     public Genome getGenome() {
         return genome;
     }
+
+    public void setChildrenCount(int childrenCount) {
+        this.childrenCount = childrenCount;
+    }
 }

@@ -192,12 +192,15 @@ public class AbstractWorldMap implements WorldMap {
             AnimalList currPosAnimalList = animals.get(currPos);
 
             // remove animal from the list or remove the entire list if it's the only animal
-            if (currPosAnimalList.size() == 1) {
-                animals.remove(currPos);
+            if (currPosAnimalList != null) {
+                if (currPosAnimalList.size() == 1) {
+                    animals.remove(currPos);
+                }
+                else {
+                    currPosAnimalList.remove(animal);
+                }
             }
-            else {
-                currPosAnimalList.remove(animal);
-            }
+
 
             // add animal to an existing list on nextPos or create a new list
             if (animals.get(nextPos) == null) {
@@ -507,6 +510,8 @@ public class AbstractWorldMap implements WorldMap {
         child.setGenes(childGenes);
         bestAnimal1.changeEnergy((-1)*settings.getEnergyUsedByParents());
         bestAnimal2.changeEnergy((-1)*settings.getEnergyUsedByParents());
+        bestAnimal1.setChildrenCount(bestAnimal1.getChildrenCount() + 1);
+        bestAnimal2.setChildrenCount(bestAnimal2.getChildrenCount() + 1);
         child.setEnergy(2*settings.getEnergyUsedByParents());
 
         // mutations

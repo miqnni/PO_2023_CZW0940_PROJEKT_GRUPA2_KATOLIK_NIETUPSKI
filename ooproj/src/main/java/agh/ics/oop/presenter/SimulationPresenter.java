@@ -1,14 +1,12 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
-import agh.ics.oop.model.MapChangeListener;
 import agh.ics.oop.model.Settings;
 import agh.ics.oop.model.SimulationChangeListener;
-import agh.ics.oop.model.WorldMap;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
+import javafx.scene.control.*;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
@@ -32,6 +30,9 @@ public class SimulationPresenter implements SimulationChangeListener {
     public Spinner<Integer> durationInDaysSpinner;
     public Spinner<Integer> halfCycleLengthSpinner;
     public Spinner<Integer> waterRangeLimitSpinner;
+    public Label statsLabel;
+    public Button stopButton;
+    public CheckBox saveCheckbox;
     @FXML
     private Label infoLabel;
 
@@ -42,15 +43,17 @@ public class SimulationPresenter implements SimulationChangeListener {
         this.simulation = simulation;
     }
 
-    public void drawMap() {
+    public void drawSimulationStatus(String message) {
+        dayNumber.setText(message);
         infoLabel.setText(this.simulation.getTestMap().toString());
+        statsLabel.setText(simulation.getStatsAsString());
     }
-
 
     @Override
     public void simulationChanged(Simulation simulation, String message) {
-        dayNumber.setText(message);
-        drawMap();
+        Platform.runLater(() -> {
+            drawSimulationStatus(message);
+        });
     }
 
     @FXML
@@ -75,18 +78,21 @@ public class SimulationPresenter implements SimulationChangeListener {
                     halfCycleLengthSpinner.getValue(),
                     waterRangeLimitSpinner.getValue()
             ));
-
-            simulation.run();
+            if (!simulation.isPrepared()) {
+                simulation.prepare();
+                if(saveCheckbox.isSelected()) {
+                    simulation.setSaveToCSV(true);
+                    simulation.setCurrentFilePath("logs");
+                }
+            }
+            simulation.getParentEngine().runAsync();
             }
 
         );
+        
     }
-//    public void onSimulationStartClicked() {
-////        Settings currSettings = new Settings();
-////        currSettings.setMapWidth(mapWidthSpinner.getValue());
-////        currSettings.setMapHeight(mapHeightSpinner.getValue());
-////        simulation.setSettings(currSettings);
-//        simulation.run();
-//    }
 
+    public void onStopClicked(ActionEvent actionEvent) {
+        simulation.stop();
+    }
 }
