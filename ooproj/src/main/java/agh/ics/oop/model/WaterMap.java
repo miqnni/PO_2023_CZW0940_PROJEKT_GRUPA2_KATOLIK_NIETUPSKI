@@ -203,7 +203,7 @@ public class WaterMap extends AbstractWorldMap {
                 currAnimal.setDayOfDeath(dayNo);
                 iterator.remove();
                 deadAnimals.add(currAnimal);
-                removeGenome(currAnimal.getGenome());
+                removeGenomeFromStats(currAnimal.getGenome());
 
 
                 // animal removal procedure

@@ -13,7 +13,20 @@ public class AbstractWorldMap implements WorldMap {
 
     protected Map<Genome, Integer> genomeCount = new HashMap<>();
 
-//    protected double[][] plantGrowthChance;
+    private final List<MapChangeListener> observers = new LinkedList<>();
+
+    public void addObserver(MapChangeListener newObserver) {
+        observers.add(newObserver);
+    }
+
+    public void removeObserver(MapChangeListener toRemove) {
+        observers.remove(toRemove);
+    }
+
+    public void mapChanged(String s) {
+        for (MapChangeListener observer : observers)
+            observer.mapChanged(this, s);
+    }
 
     protected UUID mapId;
 
@@ -81,10 +94,9 @@ public class AbstractWorldMap implements WorldMap {
 
         livingAnimals.add(animal);
         animal.setMapWhereItLives(this);
-        addGenome(animal.getGenome());
+        addGenomeToStats(animal.getGenome());
 
-
-//        System.out.println("Animal placed at " + animalPos);
+        mapChanged("Animal " + animal + " placed at " + animalPos + ".");
     }
 
     public void growPlant(Vector2d position) {
@@ -175,10 +187,6 @@ public class AbstractWorldMap implements WorldMap {
         Vector2d currPos = animal.getPosition();
         animal.moveForward(this);
         Vector2d nextPos = animal.getPosition();
-//        if (!currPos.equals(nextPos)) {
-//            animals.remove(currPos);
-//            animals.put(nextPos, animal);
-//        }
 
         if (!currPos.equals(nextPos)) {
             AnimalList currPosAnimalList = animals.get(currPos);
@@ -202,12 +210,17 @@ public class AbstractWorldMap implements WorldMap {
                 nextAnimalList.add(animal);
             }
         }
+
+        mapChanged("Animal " + animal + " moved forward: " + currPos + " -> " + nextPos + ".");
 //        System.out.println("Animal " + animal + " moved forward " + currPos + " -> " + nextPos);
     }
 
     @Override
     public void turn(Animal animal, int timesTurned) {
+        MapDirection orientationOld = animal.getOrientation();
         animal.turn(timesTurned);
+        MapDirection orientationNew = animal.getOrientation();
+        mapChanged("Animal " + animal + " turned: " + orientationOld + " -> " + orientationNew + ".");
     }
 
     @Override
@@ -253,12 +266,6 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     public List<Animal> createCurrAnimalList() {
-//        List<Animal> currAnimalList = new ArrayList<>();
-//        for (Map.Entry<Vector2d, Animal> entry : animals.entrySet()) {
-//            Animal currAnimal = entry.getValue();
-//            currAnimalList.add(currAnimal);
-//        }
-//        return currAnimalList;
         return livingAnimals;
     }
 
@@ -296,7 +303,7 @@ public class AbstractWorldMap implements WorldMap {
                 currAnimal.setDayOfDeath(dayNo);
                 iterator.remove();
                 deadAnimals.add(currAnimal);
-                removeGenome(currAnimal.getGenome());
+                removeGenomeFromStats(currAnimal.getGenome());
 
 
                 // animal removal procedure
@@ -330,6 +337,9 @@ public class AbstractWorldMap implements WorldMap {
 
     public Animal findBestAnimal (AnimalList animalList) {
         return animalList.findBestAnimal();
+
+        // ~~~~~~ LEGACY ~~~~~~
+
 //        List<Animal> animalsFromTheList = animalList.getAnimals();
 //        // ASSUMPTION: this list is not empty
 //
@@ -392,6 +402,8 @@ public class AbstractWorldMap implements WorldMap {
 //        int upperBound = greatestChildrenCountAnimals.size();
 //        int randIdx = rand.nextInt(upperBound);
 //        return greatestChildrenCountAnimals.get(randIdx);
+
+        // ~~~~~~~~~~~~~~~~~~
     }
 
     public void plantConsumptionOnFieldIfPossible(Vector2d position) {
@@ -507,6 +519,7 @@ public class AbstractWorldMap implements WorldMap {
 
         // end
         place(child);
+        mapChanged("Animals " + bestAnimal1 + " and " + bestAnimal2 + " reproduced at " + position + " creating animal " + child);
 //        System.out.println("\t Reproduction successful!");
     }
 
@@ -731,7 +744,7 @@ public class AbstractWorldMap implements WorldMap {
         return false;
     }
 
-    public void addGenome(Genome genome) {
+    public void addGenomeToStats(Genome genome) {
         if (genomeCount.containsKey(genome)) {
             genomeCount.put(genome, genomeCount.get(genome) + 1);
         }
@@ -740,7 +753,7 @@ public class AbstractWorldMap implements WorldMap {
         }
     }
 
-    public void removeGenome(Genome genome) {
+    public void removeGenomeFromStats(Genome genome) {
         if (!genomeCount.containsKey(genome)) {
             return;
         }

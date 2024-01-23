@@ -9,7 +9,7 @@ public class World {
                 15,
                 0,
                 7,
-                0,
+                3,
                 -1,
                 5,
                 50,
@@ -22,12 +22,15 @@ public class World {
                 // mapType: 0 or 3
                 3,
                 50,
-                7,
-                3
+                10,
+                11
                 );
 
         Simulation testSim = new Simulation(testSettings);
+        ConsoleSimulationDisplay testSimConsole = new ConsoleSimulationDisplay();
+        testSim.addObserver(testSimConsole);
         testSim.run();
+        testSim.removeObserver(testSimConsole);
 
 //        List<Animal> myList = new ArrayList<>();
 //        myList.add(new Animal(new Vector2d(3,1), testSettings, 0));
