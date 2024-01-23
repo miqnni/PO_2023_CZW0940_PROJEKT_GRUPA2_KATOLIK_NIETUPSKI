@@ -6,7 +6,6 @@ public class Settings {
     private int startPlantCount;
     private int energyPerPlant;
     private int newPlantsPerDay;
-    private int plantGrowthType;
     private int startAnimalCount;
     private int startAnimalEnergy;
     private int reproductionEnergyThreshold;
@@ -21,13 +20,12 @@ public class Settings {
 
     private int waterRangeLimit;
 
-    public Settings(int mapWidth, int mapHeight, int startPlantCount, int energyPerPlant, int newPlantsPerDay, int plantGrowthType, int startAnimalCount, int startAnimalEnergy, int reproductionEnergyThreshold, int energyUsedByParents, int minMutationCount, int maxMutationCount, int mutationType, int genomeLength, int mapType, int durationInDays, int halfCycleLength, int waterRangeLimit) {
+    public Settings(int mapWidth, int mapHeight, int startPlantCount, int energyPerPlant, int newPlantsPerDay, int startAnimalCount, int startAnimalEnergy, int reproductionEnergyThreshold, int energyUsedByParents, int minMutationCount, int maxMutationCount, int mutationType, int genomeLength, int mapType, int durationInDays, int halfCycleLength, int waterRangeLimit) {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.startPlantCount = startPlantCount;
         this.energyPerPlant = energyPerPlant;
         this.newPlantsPerDay = newPlantsPerDay;
-        this.plantGrowthType = plantGrowthType;
         this.startAnimalCount = startAnimalCount;
         this.startAnimalEnergy = startAnimalEnergy;
         this.reproductionEnergyThreshold = reproductionEnergyThreshold;
@@ -98,10 +96,6 @@ public class Settings {
         return newPlantsPerDay;
     }
 
-    public int getPlantGrowthType() {
-        return plantGrowthType;
-    }
-
     public int getDurationInDays() {
         return durationInDays;
     }
@@ -112,5 +106,74 @@ public class Settings {
 
     public int getWaterRangeLimit() {
         return waterRangeLimit;
+    }
+
+
+    public void setMapWidth(int mapWidth) {
+        this.mapWidth = mapWidth;
+    }
+
+    public void setMapHeight(int mapHeight) {
+        this.mapHeight = mapHeight;
+    }
+
+    public void setStartPlantCount(int startPlantCount) {
+        this.startPlantCount = startPlantCount;
+    }
+
+    public void setEnergyPerPlant(int energyPerPlant) {
+        this.energyPerPlant = energyPerPlant;
+    }
+
+    public void setNewPlantsPerDay(int newPlantsPerDay) {
+        this.newPlantsPerDay = newPlantsPerDay;
+    }
+
+    public void setStartAnimalCount(int startAnimalCount) {
+        this.startAnimalCount = startAnimalCount;
+    }
+
+    public void setStartAnimalEnergy(int startAnimalEnergy) {
+        this.startAnimalEnergy = startAnimalEnergy;
+    }
+
+    public void setReproductionEnergyThreshold(int reproductionEnergyThreshold) {
+        this.reproductionEnergyThreshold = reproductionEnergyThreshold;
+    }
+
+    public void setEnergyUsedByParents(int energyUsedByParents) {
+        this.energyUsedByParents = energyUsedByParents;
+    }
+
+    public void setMinMutationCount(int minMutationCount) {
+        this.minMutationCount = minMutationCount;
+    }
+
+    public void setMaxMutationCount(int maxMutationCount) {
+        this.maxMutationCount = maxMutationCount;
+    }
+
+    public void setMutationType(int mutationType) {
+        this.mutationType = mutationType;
+    }
+
+    public void setGenomeLength(int genomeLength) {
+        this.genomeLength = genomeLength;
+    }
+
+    public void setMapType(int mapType) {
+        this.mapType = mapType;
+    }
+
+    public void setDurationInDays(int durationInDays) {
+        this.durationInDays = durationInDays;
+    }
+
+    public void setHalfCycleLength(int halfCycleLength) {
+        this.halfCycleLength = halfCycleLength;
+    }
+
+    public void setWaterRangeLimit(int waterRangeLimit) {
+        this.waterRangeLimit = waterRangeLimit;
     }
 }

@@ -5,25 +5,24 @@ import agh.ics.oop.model.*;
 public class World {
     public static void main(String[] args) {
         Settings testSettings = new Settings(
-                15,
+                30,
+                25,
+                0,
                 15,
                 0,
-                7,
-                3,
-                -1,
-                5,
-                50,
+                1,
+                20,
+                20,
                 10,
-                4,
                 0,
                 1,
                 2,
-                2,
+                15,
                 // mapType: 0 or 3
-                3,
-                50,
-                10,
-                11
+                0,
+                15,
+                40,
+                5
                 );
 
         Simulation testSim = new Simulation(testSettings);
@@ -31,11 +30,6 @@ public class World {
         testSim.addObserver(testSimConsole);
         testSim.run();
         testSim.removeObserver(testSimConsole);
-
-//        List<Animal> myList = new ArrayList<>();
-//        myList.add(new Animal(new Vector2d(3,1), testSettings, 0));
-//        myList.add(new Animal(new Vector2d(2,1), testSettings, 0));
-//        System.out.println(myList.toString());
 
         //TODO
         //  interfejs

@@ -5,9 +5,9 @@ import java.util.*;
 
 public class Simulation implements Runnable {
     private final UUID simulationId;
-    private final Settings settings;
+    private Settings settings;
 
-    private final AbstractWorldMap testMap;
+    private AbstractWorldMap testMap;
 
     private final List<SimulationChangeListener> observers = new LinkedList<>();
 
@@ -28,17 +28,19 @@ public class Simulation implements Runnable {
 
     public Simulation(Settings settings) {
         this.settings = settings;
+
+        this.simulationId = UUID.randomUUID();
+        this.simDayCnt = 0;
+    }
+
+    public void run() {
         if (settings.getMapType() == 3) {
             this.testMap = new WaterMap(settings);
         }
         else {
             this.testMap = new AbstractWorldMap(settings);
         }
-        this.simulationId = UUID.randomUUID();
-        this.simDayCnt = 0;
-    }
-
-    public void run() {
+        simDayCnt = 0;
         for (int i = 0; i < settings.getStartAnimalCount(); i++) {
             Animal currAnimal = new Animal(testMap.randomField(), settings, 0);
             testMap.place(currAnimal);
@@ -46,13 +48,24 @@ public class Simulation implements Runnable {
         testMap.growPlantsInRandomFields(settings.getStartPlantCount());
         for (int dayCnt = 0; dayCnt < settings.getDurationInDays(); dayCnt++) {
             if (settings.getMapType() == 3) {
-                letOneDayPassWithWater((WaterMap) testMap);
+                try {
+                    letOneDayPassWithWater((WaterMap) testMap);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            else letOneDayPass(testMap);
+            else {
+                try {
+                    letOneDayPass(testMap);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
+        simulationChanged("SIMULATION ENDED: " + simDayCnt + " PASSED");
     }
 
-    private void letOneDayPass(AbstractWorldMap selectedMap) {
+    private void letOneDayPass(AbstractWorldMap selectedMap) throws InterruptedException {
         int currDayVal = simDayCnt;
         simulationChanged("DAY " + currDayVal + " START");
         // day
@@ -69,10 +82,11 @@ public class Simulation implements Runnable {
 
         // transition to next day
         simDayCnt++;
+//        Thread.sleep(500);
 
     }
 
-    private void letOneDayPassWithWater(WaterMap selectedMap) {
+    private void letOneDayPassWithWater(WaterMap selectedMap) throws InterruptedException {
         letOneDayPass(selectedMap);
         int currDayVal = simDayCnt;
 
@@ -92,10 +106,10 @@ public class Simulation implements Runnable {
         AbstractWorldMap selectedMap = testMap;
         System.out.println("Statistics: day " + simDayCnt);
 //        System.out.println(selectedMap);
-        List<Animal> currAnimalList = selectedMap.createCurrAnimalList();
-        for (Animal currAnimal : currAnimalList) {
-            System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy() + " days=" + currAnimal.getDaysLived() + " GENES: " + Arrays.toString(currAnimal.getGenes()));
-        }
+//        List<Animal> currAnimalList = selectedMap.createCurrAnimalList();
+//        for (Animal currAnimal : currAnimalList) {
+//            System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy() + " days=" + currAnimal.getDaysLived() + " GENES: " + Arrays.toString(currAnimal.getGenes()));
+//        }
         System.out.println("Animal count: " + selectedMap.getAnimalCount());
         System.out.println("Plant count: " + selectedMap.getPlantCount());
         System.out.println("Empty Field count: " + selectedMap.getEmptyFieldCount());
@@ -140,5 +154,17 @@ public class Simulation implements Runnable {
 
     public UUID getSimulationId() {
         return simulationId;
+    }
+
+    public int getSimDayCnt() {
+        return simDayCnt;
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 }
