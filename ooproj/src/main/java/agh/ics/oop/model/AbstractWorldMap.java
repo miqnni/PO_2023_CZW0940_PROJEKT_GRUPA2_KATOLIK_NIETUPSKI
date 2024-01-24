@@ -512,6 +512,8 @@ public class AbstractWorldMap implements WorldMap {
         bestAnimal2.changeEnergy((-1)*settings.getEnergyUsedByParents());
         bestAnimal1.setChildrenCount(bestAnimal1.getChildrenCount() + 1);
         bestAnimal2.setChildrenCount(bestAnimal2.getChildrenCount() + 1);
+        bestAnimal1.addChild(child);
+        bestAnimal2.addChild(child);
         child.setEnergy(2*settings.getEnergyUsedByParents());
 
         // mutations
@@ -645,12 +647,23 @@ public class AbstractWorldMap implements WorldMap {
         return res;
     }
 
+    public int getAnimalFieldCount() {
+        int res = 0;
+
+        for (Map.Entry<Vector2d, AnimalList> entry : animals.entrySet()) {
+            AnimalList currList = entry.getValue();
+            res ++;
+        }
+
+        return res;
+    }
+
     public int getPlantCount() {
         return plants.size();
     }
 
     public int getEmptyFieldCount() {
-        return ((width) * (height)) - getAnimalCount() - getPlantCount();
+        return ((width) * (height)) - getAnimalFieldCount() - getPlantCount();
     }
 
     public double getAvgEnergy() {
@@ -772,5 +785,9 @@ public class AbstractWorldMap implements WorldMap {
 
     public Map<Genome, Integer> getGenomeCount() {
         return genomeCount;
+    }
+
+    public Map<Vector2d, Plant> getPlants() {
+        return plants;
     }
 }

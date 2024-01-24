@@ -14,7 +14,7 @@
 <?import java.lang.String?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minHeight="550.0" minWidth="850.0"
+            minHeight="700.0" minWidth="1250.0"
             fx:controller="agh.ics.oop.presenter.SimulationPresenter"
             stylesheets="styles.css">
     <top>
@@ -24,8 +24,8 @@
         <VBox>
             <HBox>
                 <VBox>
-                    <Label text="Map width"/><Spinner fx:id="mapWidthSpinner" max="35" editable="true" initialValue="20" />
-                    <Label text="Map height"/><Spinner fx:id="mapHeightSpinner" max="35" editable="true" initialValue="15" />
+                    <Label text="Map width"/><Spinner fx:id="mapWidthSpinner" max="25" editable="true" initialValue="20" />
+                    <Label text="Map height"/><Spinner fx:id="mapHeightSpinner" max="25" editable="true" initialValue="15" />
                     <Label text="Start plant count"/><Spinner fx:id="startPlantCountSpinner" max="100" editable="true" initialValue="8" />
                     <Label text="Energy per plant"/><Spinner fx:id="energyPerPlantSpinner" max="100" editable="true" initialValue="16" />
                     <Label text="New plants per day"/><Spinner fx:id="newPlantsPerDaySpinner" max="100" editable="true" initialValue="5" />
@@ -67,8 +67,6 @@
                     <HBox fx:id="actionButtons">
                         <Button fx:id="startButton" text="Start"/>
                         <Button fx:id="stopButton" text="Stop" onAction="#onStopClicked"/>
-                        <Button fx:id="savePresetButton" text="savePreset" onAction="#onSavePresetClicked"/>
-                        <Button fx:id="loadPresetButton" text="loadPreset" onAction="#onLoadPresetClicked"/>
                     </HBox>
                 </VBox>
             </HBox>
@@ -76,8 +74,9 @@
                 <CheckBox fx:id="saveCheckbox"/>
                 <Label text="Save results to CSV" />
             </HBox>
-            <HBox>
-
+            <HBox fx:id="presetButtons">
+                <Button fx:id="savePresetButton" text="Save Preset" onAction="#onSavePresetClicked"/>
+                <Button fx:id="loadPresetButton" text="Load Preset" onAction="#onLoadPresetClicked"/>
             </HBox>
         </VBox>
 
@@ -88,16 +87,32 @@
                 <Label fx:id="dayNumber" text="SIMULATION" textAlignment="CENTER"/>
             </HBox>
             <HBox>
-                <Label fx:id="infoLabel" text="All animals will be living here!" style="-fx-font-family: Consolas"/>
+                <Label fx:id="infoLabel" style="-fx-font-family: Consolas"/>
+            </HBox>
+            <HBox>
+                <GridPane fx:id="mapGrid" />
             </HBox>
             <HBox>
                 <GridPane fx:id="mainGridPane" />
             </HBox>
             <HBox>
-                <Label fx:id="statsLabel" style="-fx-font-family: Consolas"/>
+
+                <VBox style="-fx-alignment: BASELINE">
+
+                </VBox>
+            </HBox>
+            <HBox>
+
             </HBox>
         </VBox>
     </center>
+    <right>
+        <VBox>
+            <Label fx:id="statsLabel" style="-fx-font-family: Consolas"/>
+            <Label fx:id="animalStatsLabel" style="-fx-font-family: Consolas"/>
+            <Button fx:id="stopTrackingButton" text="Stop Tracking" onAction="#onStopTrackingClicked"/>
+        </VBox>
+    </right>
     <bottom>
         <VBox>
 

@@ -1,6 +1,6 @@
 package agh.ics.oop.model;
 
-import java.util.Random;
+import java.util.*;
 
 import static agh.ics.oop.model.MapDirection.next;
 
@@ -26,6 +26,8 @@ public class Animal implements WorldElement {
 
     private Animal parent1;
     private Animal parent2;
+
+    private List<Animal> children;
 
     private AbstractWorldMap mapWhereItLives;
 
@@ -55,6 +57,7 @@ public class Animal implements WorldElement {
         this.startGeneId = rand.nextInt(settings.getGenomeLength());
 
         this.childrenCount = 0;
+        this.children = new ArrayList<>();
         this.plantsEaten = 0;
         this.settings = settings;
 
@@ -203,5 +206,37 @@ public class Animal implements WorldElement {
 
     public void setChildrenCount(int childrenCount) {
         this.childrenCount = childrenCount;
+    }
+
+    public String getAnimalStats() {
+        return "Animal info: " + "\n" +
+                "Position: " + this.position.toString() + "\n" +
+                "Energy: " + this.energy + "\n" +
+                "Direction: " + this.orientation.toString() + "\n" +
+                "Genotype: " + Arrays.toString(this.genes) + "\n" +
+                "Children: " + this.childrenCount + "\n" +
+                "Descendants: " + this.getDescendantCount() + "\n" +
+                "Eaten plant count: " + this.plantsEaten + "\n" +
+                "Birth day: " + this.dayOfBirth + "\n" +
+                "Age: " + this.daysLived + "\n" +
+                "Alive: " + this.alive + "\n";
+    }
+
+    public void addChild(Animal animal) {
+        children.add(animal);
+    }
+
+    public int getDescendantCount() {
+        if (children.isEmpty()) return 0;
+        int ans = children.size();
+
+        Iterator<Animal> iterator = children.iterator();
+
+        while (iterator.hasNext()) {
+            Animal currAnimal = iterator.next();
+            ans += currAnimal.getDescendantCount();
+        }
+
+        return ans;
     }
 }

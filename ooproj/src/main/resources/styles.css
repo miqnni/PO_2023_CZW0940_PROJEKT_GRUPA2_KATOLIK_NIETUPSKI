@@ -26,6 +26,11 @@
     -fx-spacing: 10px;
 }
 
+#presetButtons {
+    -fx-padding: 0 5px;
+    -fx-spacing: 10px;
+}
+
 #onlyBorder {
     -fx-padding: 5px;
     -fx-border-insets: 5px;
@@ -39,4 +44,28 @@
     -fx-padding: 0 0 0 5px;
     -fx-border-insets: 5px;
     -fx-background-insets: 5px;
+}
+
+.waterCell {
+    -fx-background-color: darkslategrey;
+    -fx-border-color: black;
+}
+
+.plantCell {
+    -fx-background-color: green;
+    -fx-border-color: black;
+}
+
+.emptyCell {
+    -fx-background-color: lightgrey;
+    -fx-border-color: black;
+}
+
+.animalCell {
+    /*-fx-background-color: burlywood;*/
+    -fx-border-color: black;
+}
+
+* {
+    -fx-font-family: Consolas;
 }

@@ -1,11 +1,11 @@
 package agh.ics.oop.presenter;
 
 import agh.ics.oop.Simulation;
-import agh.ics.oop.model.Settings;
-import agh.ics.oop.model.SimulationChangeListener;
+import agh.ics.oop.model.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -47,10 +47,14 @@ public class SimulationPresenter implements SimulationChangeListener {
     public GridPane mainGridPane;
     public Button savePresetButton;
     public Button loadPresetButton;
+    public GridPane mapGrid;
+    public Label animalStatsLabel;
+    public Button stopTrackingButton;
+    public HBox presetButtons;
     @FXML
     private Label infoLabel;
-
     private Simulation simulation;
+    private Animal trackedAnimal;
 
 
     public void setSimulation(Simulation simulation) {
@@ -59,7 +63,7 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     public void drawSimulationStatus(String message) {
         dayNumber.setText(message);
-        infoLabel.setText(this.simulation.getTestMap().toString());
+//        infoLabel.setText(this.simulation.getTestMap().toString());
         statsLabel.setText(simulation.getStatsAsString());
     }
 
@@ -67,8 +71,75 @@ public class SimulationPresenter implements SimulationChangeListener {
     public void simulationChanged(Simulation simulation, String message) {
         Platform.runLater(() -> {
             drawSimulationStatus(message);
+            renderMapGrid();
         });
     }
+
+    private String calculateColor(int energy, int maxEnergy) {
+        maxEnergy = Math.max(maxEnergy, 1);
+        int intensity = (int) ((double) energy / maxEnergy * 255);
+        intensity = Math.min(255, Math.max(0, intensity));
+
+        return String.format("#%02x%02x%02x", 255 - intensity, 0, Math.min(intensity, 255));
+    }
+
+    private void renderMapGrid() {
+
+        clearGrid();
+        for (int j = 0; j < simulation.getSettings().getMapHeight(); j++) {
+            for (int i = 0; i < simulation.getSettings().getMapWidth(); i++) {
+                Label label = new Label(" ");
+                Vector2d position = new Vector2d(i, j);
+                if (simulation.getTestMap().isOccupied(position)) {
+//                    label.setText(simulation.getTestMap().objectAt(position).toString());
+
+
+                    if (simulation.getTestMap().isOccupiedByWater(position)) {
+                        label.getStyleClass().add("waterCell");
+                    }
+                    else if (simulation.getTestMap().getAnimals().get(position) != null) {
+                        label.getStyleClass().add("animalCell");
+                        String colorCode = calculateColor(simulation.getTestMap().getAnimals().get(position).findBestAnimal().getEnergy(), 250);
+                        label.setStyle("-fx-background-color: " + colorCode + ";");
+                    }
+                    else if (simulation.getTestMap().getPlants().get(position) != null) {
+                        label.getStyleClass().add("plantCell");
+                    }
+
+                }
+                else {
+                    label.getStyleClass().add("emptyCell");
+                }
+
+                if (trackedAnimal != null) {
+                    animalStatsLabel.setText(trackedAnimal.getAnimalStats());
+                }
+                label.setOnMouseClicked(event -> {
+                    if (simulation.getTestMap().getAnimals().get(position) != null) {
+                        trackedAnimal = simulation.getTestMap().getAnimals().get(position).findBestAnimal();
+                        animalStatsLabel.setText(trackedAnimal.getAnimalStats());
+                        stopTrackingButton.setVisible(true);
+                    }
+                });
+
+
+                mapGrid.add(label, i + 1, simulation.getSettings().getMapHeight() - (j));
+            }
+        }
+        for (int i = 0; i < simulation.getSettings().getMapWidth(); i++) {
+            Label label = new Label(String.valueOf(i));
+            mapGrid.add(label, i + 1, 0);
+        }
+        for (int j = 0; j < simulation.getSettings().getMapHeight(); j++) {
+            Label label = new Label(String.valueOf(j));
+            mapGrid.add(label, 0, simulation.getSettings().getMapHeight() - (j));
+        }
+
+
+
+    }
+
+
 
     public int getSelectedMapTypeValue() {
         String selectedValue = mapTypeComboBox.getValue();
@@ -115,6 +186,8 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     @FXML
     private void initialize() {
+        stopButton.setDisable(true);
+        stopTrackingButton.setVisible(false);
         mapTypeComboBox.setValue("Default");
         mutationTypeComboBox.setValue("Pure Randomness");
 
@@ -122,9 +195,13 @@ public class SimulationPresenter implements SimulationChangeListener {
             /*System.out.println(mapTypeComboBox.getValue() + getSelectedMapTypeValue());
             System.out.println(mutationTypeComboBox.getValue() + getSelectedMutationTypeValue());*/
 
+            startButton.setDisable(true);
+            stopButton.setDisable(false);
+            loadPresetButton.setDisable(true);
             useSettings();
             if (!simulation.isPrepared()) {
                 simulation.prepare();
+                trackedAnimal = null;
                 if(saveCheckbox.isSelected()) {
                     simulation.setSaveToCSV(true);
                     simulation.setCurrentFilePath("logs");
@@ -134,10 +211,15 @@ public class SimulationPresenter implements SimulationChangeListener {
             }
 
         );
-        
+
     }
 
     public void onStopClicked(ActionEvent actionEvent) {
+        stopButton.setDisable(true);
+        startButton.setDisable(false);
+        if (simulation.getSimDayCnt() == simulation.getSettings().getDurationInDays()) {
+            loadPresetButton.setDisable(false);
+        }
         simulation.stop();
     }
 
@@ -206,6 +288,23 @@ public class SimulationPresenter implements SimulationChangeListener {
                 ex.printStackTrace();
             }
         }
+    }
+
+    private void clearGrid() {
+        if (simulation.getSimDayCnt() > 0) {
+//            mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));
+            List<Node> childrenToRemove = new ArrayList<>(mapGrid.getChildren());
+            mapGrid.getChildren().removeAll(childrenToRemove);
+            mapGrid.getColumnConstraints().clear();
+            mapGrid.getRowConstraints().clear();
+        }
+    }
+
+
+    public void onStopTrackingClicked(ActionEvent actionEvent) {
+        trackedAnimal = null;
+        stopTrackingButton.setVisible(false);
+        animalStatsLabel.setText("");
     }
 }
 
