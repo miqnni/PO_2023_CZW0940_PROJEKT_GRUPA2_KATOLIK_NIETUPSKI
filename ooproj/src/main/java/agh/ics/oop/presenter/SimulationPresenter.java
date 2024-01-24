@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
@@ -26,13 +27,17 @@ public class SimulationPresenter implements SimulationChangeListener {
     public Spinner<Integer> maxMutationCountSpinner;
     public Spinner<Integer> mutationTypeSpinner;
     public Spinner<Integer> genomeLengthSpinner;
-    public Spinner<Integer> mapTypeSpinner;
+//    public Spinner<Integer> mapTypeSpinner;
     public Spinner<Integer> durationInDaysSpinner;
     public Spinner<Integer> halfCycleLengthSpinner;
     public Spinner<Integer> waterRangeLimitSpinner;
     public Label statsLabel;
     public Button stopButton;
     public CheckBox saveCheckbox;
+    public ComboBox<String> mapTypeComboBox;
+    public ComboBox<String> mutationTypeComboBox;
+    public HBox actionButtons;
+    public HBox onlyBorder;
     @FXML
     private Label infoLabel;
 
@@ -56,9 +61,35 @@ public class SimulationPresenter implements SimulationChangeListener {
         });
     }
 
+    public int getSelectedMapTypeValue() {
+        String selectedValue = mapTypeComboBox.getValue();
+
+        if ("Water".equals(selectedValue)) {
+            return 3;
+        } else {
+            return 0;
+        }
+    }
+
+    public int getSelectedMutationTypeValue() {
+        String selectedValue = mutationTypeComboBox.getValue();
+
+        if ("Slight Replacement".equals(selectedValue)) {
+            return 2;
+        } else {
+            return 0;
+        }
+    }
+
     @FXML
     private void initialize() {
+        mapTypeComboBox.setValue("Default");
+        mutationTypeComboBox.setValue("Pure Randomness");
+
         startButton.setOnAction(event -> {
+            System.out.println(mapTypeComboBox.getValue() + getSelectedMapTypeValue());
+            System.out.println(mutationTypeComboBox.getValue() + getSelectedMutationTypeValue());
+
             simulation.setSettings(new Settings(
                     mapWidthSpinner.getValue(),
                     mapHeightSpinner.getValue(),
@@ -71,9 +102,9 @@ public class SimulationPresenter implements SimulationChangeListener {
                     energyPerPlantSpinner.getValue(),
                     minMutationCountSpinner.getValue(),
                     maxMutationCountSpinner.getValue(),
-                    mutationTypeSpinner.getValue(),
+                    getSelectedMutationTypeValue(),
                     genomeLengthSpinner.getValue(),
-                    mapTypeSpinner.getValue(),
+                    getSelectedMapTypeValue(),
                     durationInDaysSpinner.getValue(),
                     halfCycleLengthSpinner.getValue(),
                     waterRangeLimitSpinner.getValue()

@@ -52,7 +52,7 @@ public class SimulationCSV {
         csvBuilder.append("Avg Energy,").append(simulation.getTestMap().getAvgEnergy()).append("\n");
         csvBuilder.append("Avg Lifespan,").append(simulation.getTestMap().getAvgLifespanOfDeadAnimals()).append("\n");
         csvBuilder.append("Avg Children count,").append(simulation.getTestMap().getAvgChildrenCount()).append("\n");
-        csvBuilder.append("Dominant Genotype,").append(simulation.findMostPopularGenotype(simulation.getTestMap()) != null ? simulation.findMostPopularGenotype(simulation.getTestMap()).toString() : "No Dominant Genotype").append("\n");
+        csvBuilder.append("Dominant Genotype,").append(simulation.findMostPopularGenotype(simulation.getTestMap()) != null ? simulation.findMostPopularGenotype(simulation.getTestMap()).toString() : "None").append("\n");
         csvBuilder.append("\n");
 
         try {

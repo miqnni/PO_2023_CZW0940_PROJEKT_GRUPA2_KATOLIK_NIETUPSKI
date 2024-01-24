@@ -48,7 +48,7 @@ public class SimulationApp extends Application {
         presenter.setSimulation(testSim);
 
         ConsoleSimulationDisplay testConsole = new ConsoleSimulationDisplay();
-        testSim.addObserver(testConsole);
+//        testSim.addObserver(testConsole);
 
         List<Simulation> testSimList = new ArrayList<>();
         testSimList.add(testSim);

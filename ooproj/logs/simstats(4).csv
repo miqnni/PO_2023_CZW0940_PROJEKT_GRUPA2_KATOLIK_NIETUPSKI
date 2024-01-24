@@ -1,0 +1,271 @@
+Statistic,Value
+Day,0
+Animal count,20
+Plant count,10
+Empty Field count,270
+Avg Energy,17.4
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,1
+Animal count,20
+Plant count,14
+Empty Field count,266
+Avg Energy,17.2
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,2
+Animal count,20
+Plant count,17
+Empty Field count,263
+Avg Energy,17.8
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,3
+Animal count,20
+Plant count,20
+Empty Field count,260
+Avg Energy,18.4
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,4
+Animal count,20
+Plant count,20
+Empty Field count,260
+Avg Energy,21.4
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,5
+Animal count,20
+Plant count,22
+Empty Field count,258
+Avg Energy,22.8
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,6
+Animal count,20
+Plant count,24
+Empty Field count,256
+Avg Energy,24.2
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,7
+Animal count,20
+Plant count,22
+Empty Field count,258
+Avg Energy,28.8
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,8
+Animal count,20
+Plant count,23
+Empty Field count,257
+Avg Energy,31.0
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,9
+Animal count,20
+Plant count,26
+Empty Field count,254
+Avg Energy,31.6
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,10
+Animal count,20
+Plant count,28
+Empty Field count,252
+Avg Energy,33.0
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,11
+Animal count,20
+Plant count,29
+Empty Field count,251
+Avg Energy,35.2
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,12
+Animal count,20
+Plant count,31
+Empty Field count,249
+Avg Energy,36.6
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,13
+Animal count,20
+Plant count,32
+Empty Field count,248
+Avg Energy,38.8
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,14
+Animal count,20
+Plant count,32
+Empty Field count,248
+Avg Energy,41.8
+Avg Lifespan,-1.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,15
+Animal count,15
+Plant count,35
+Empty Field count,250
+Avg Energy,56.53333333333333
+Avg Lifespan,15.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,16
+Animal count,15
+Plant count,36
+Empty Field count,249
+Avg Energy,59.8
+Avg Lifespan,15.0
+Avg Children count,0.0
+Dominant Genotype,No Dominant Genotype
+
+Day,17
+Animal count,17
+Plant count,38
+Empty Field count,245
+Avg Energy,54.588235294117645
+Avg Lifespan,15.0
+Avg Children count,0.23529411764705882
+Dominant Genotype,No Dominant Genotype
+
+Day,18
+Animal count,17
+Plant count,39
+Empty Field count,244
+Avg Energy,57.35294117647059
+Avg Lifespan,15.0
+Avg Children count,0.23529411764705882
+Dominant Genotype,No Dominant Genotype
+
+Day,19
+Animal count,17
+Plant count,40
+Empty Field count,243
+Avg Energy,60.11764705882353
+Avg Lifespan,15.0
+Avg Children count,0.23529411764705882
+Dominant Genotype,No Dominant Genotype
+
+Day,20
+Animal count,18
+Plant count,39
+Empty Field count,243
+Avg Energy,61.111111111111114
+Avg Lifespan,15.0
+Avg Children count,0.3333333333333333
+Dominant Genotype,No Dominant Genotype
+
+Day,21
+Animal count,21
+Plant count,40
+Empty Field count,239
+Avg Energy,54.42857142857143
+Avg Lifespan,15.0
+Avg Children count,0.5714285714285714
+Dominant Genotype,[1, 3, 6, 5]
+
+Day,22
+Animal count,22
+Plant count,43
+Empty Field count,235
+Avg Energy,52.40909090909091
+Avg Lifespan,15.0
+Avg Children count,0.6363636363636364
+Dominant Genotype,[1, 3, 6, 5]
+
+Day,23
+Animal count,22
+Plant count,40
+Empty Field count,238
+Avg Energy,57.22727272727273
+Avg Lifespan,15.0
+Avg Children count,0.6363636363636364
+Dominant Genotype,[1, 3, 6, 5]
+
+Day,24
+Animal count,22
+Plant count,40
+Empty Field count,238
+Avg Energy,59.86363636363637
+Avg Lifespan,15.0
+Avg Children count,0.6363636363636364
+Dominant Genotype,[1, 3, 6, 5]
+
+Day,25
+Animal count,22
+Plant count,41
+Empty Field count,237
+Avg Energy,61.77272727272727
+Avg Lifespan,15.0
+Avg Children count,0.6363636363636364
+Dominant Genotype,[1, 3, 6, 5]
+
+Day,26
+Animal count,24
+Plant count,44
+Empty Field count,232
+Avg Energy,56.958333333333336
+Avg Lifespan,15.0
+Avg Children count,0.75
+Dominant Genotype,[1, 3, 6, 5]
+
+Day,27
+Animal count,25
+Plant count,47
+Empty Field count,228
+Avg Energy,54.96
+Avg Lifespan,15.0
+Avg Children count,0.8
+Dominant Genotype,[1, 3, 6, 5]
+
+Day,28
+Animal count,27
+Plant count,49
+Empty Field count,224
+Avg Energy,51.666666666666664
+Avg Lifespan,15.0
+Avg Children count,0.8888888888888888
+Dominant Genotype,[1, 3, 6, 5]
+
+Day,29
+Animal count,29
+Plant count,50
+Empty Field count,221
+Avg Energy,49.310344827586206
+Avg Lifespan,15.0
+Avg Children count,0.9655172413793104
+Dominant Genotype,[1, 3, 6, 5]
+

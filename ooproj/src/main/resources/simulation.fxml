@@ -9,41 +9,82 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minHeight="550.0" minWidth="850.0"
-            fx:controller="agh.ics.oop.presenter.SimulationPresenter">
+            fx:controller="agh.ics.oop.presenter.SimulationPresenter"
+            stylesheets="styles.css">
     <top>
-        <VBox>
-            <Label fx:id="dayNumber" text="(day number)" textAlignment="CENTER"/>
-        </VBox>
+
     </top>
     <left>
         <VBox>
-            <Label text="width"/><Spinner fx:id="mapWidthSpinner" max="50" editable="true" initialValue="20" />
-            <Label text="height"/><Spinner fx:id="mapHeightSpinner" max="50" editable="true" initialValue="15" />
-            <Label text="start plant"/><Spinner fx:id="startPlantCountSpinner" max="100" editable="true" initialValue="8" />
-            <Label text="energy/plant"/><Spinner fx:id="energyPerPlantSpinner" max="100" editable="true" initialValue="16" />
-            <Label text="new plants /d"/><Spinner fx:id="newPlantsPerDaySpinner" max="100" editable="true" initialValue="5" />
-            <Label text="start animal count"/><Spinner fx:id="startAnimalCountSpinner" max="100" editable="true" initialValue="20" />
-            <Label text="start animal energy"/><Spinner fx:id="startAnimalEnergySpinner" max="100" editable="true" initialValue="16" />
-            <Label text="reproduction threshold"/><Spinner fx:id="reproductionEnergyThresholdSpinner" max="100" editable="true" initialValue="16" />
-            <Label text="used by parents"/><Spinner fx:id="energyUsedByParentsSpinner" max="100" editable="true" initialValue="8" />
-            <Label text="min mut"/><Spinner fx:id="minMutationCountSpinner" max="100" editable="true" initialValue="0" />
-            <Label text="max mut"/><Spinner fx:id="maxMutationCountSpinner" max="100" editable="true" initialValue="2" />
-            <Label text="mut type"/><Spinner fx:id="mutationTypeSpinner" max="100" editable="true" initialValue="2" />
-            <Label text="gen length"/><Spinner fx:id="genomeLengthSpinner" max="100" editable="true" initialValue="4" />
-            <Label text="map type"/><Spinner fx:id="mapTypeSpinner" max="100" editable="true" initialValue="3" />
-            <Label text="duration"/><Spinner fx:id="durationInDaysSpinner" max="500" editable="true" initialValue="30" />
-            <Label text="half cycle"/><Spinner fx:id="halfCycleLengthSpinner" max="100" editable="true" initialValue="7" />
-            <Label text="water range"/><Spinner fx:id="waterRangeLimitSpinner" max="100" editable="true" initialValue="8" />
-            <Button fx:id="startButton" text="Start"/>
-            <Button fx:id="stopButton" text="Stop" onAction="#onStopClicked"/>
+            <HBox>
+                <VBox>
+                    <Label text="Map width"/><Spinner fx:id="mapWidthSpinner" max="35" editable="true" initialValue="20" />
+                    <Label text="Map height"/><Spinner fx:id="mapHeightSpinner" max="35" editable="true" initialValue="15" />
+                    <Label text="Start plant count"/><Spinner fx:id="startPlantCountSpinner" max="100" editable="true" initialValue="8" />
+                    <Label text="Energy per plant"/><Spinner fx:id="energyPerPlantSpinner" max="100" editable="true" initialValue="16" />
+                    <Label text="New plants per day"/><Spinner fx:id="newPlantsPerDaySpinner" max="100" editable="true" initialValue="5" />
+                    <Label text="Start animal count"/><Spinner fx:id="startAnimalCountSpinner" max="100" editable="true" initialValue="20" />
+                    <Label text="Start animal energy"/><Spinner fx:id="startAnimalEnergySpinner" max="100" editable="true" initialValue="16" />
+                    <Label text="Reproduction ⚡ threshold"/><Spinner fx:id="reproductionEnergyThresholdSpinner" max="100" editable="true" initialValue="16" />
+                    <Label text="Energy used by parents"/><Spinner fx:id="energyUsedByParentsSpinner" max="100" editable="true" initialValue="8" />
+                </VBox>
+                <VBox>
+                    <Label text="Min mut. count on repr."/><Spinner fx:id="minMutationCountSpinner" max="100" editable="true" initialValue="0" />
+                    <Label text="Max mut.count on repr."/><Spinner fx:id="maxMutationCountSpinner" max="100" editable="true" initialValue="2" />
+                    <Label text="Mutation type"/>
+                    <ComboBox fx:id="mutationTypeComboBox" promptText="Choose mutation type" editable="false">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Pure Randomness" />
+                                <String fx:value="Slight Replacement" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Label text="gen length"/><Spinner fx:id="genomeLengthSpinner" max="100" editable="true" initialValue="4" />
+                    <Label text="map type"/>
+                    <ComboBox fx:id="mapTypeComboBox" promptText="Choose map type" editable="false">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Default" />
+                                <String fx:value="Water" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                    <Label text="duration"/><Spinner fx:id="durationInDaysSpinner" max="500" editable="true" initialValue="30" />
+                    <Label text="half cycle"/><Spinner fx:id="halfCycleLengthSpinner" max="100" editable="true" initialValue="7" />
+                    <Label text="water range"/><Spinner fx:id="waterRangeLimitSpinner" max="100" editable="true" initialValue="8" />
+                    <HBox>
+<!--                        <CheckBox fx:id="saveCheckbox"/>-->
+<!--                        <Label text="Save results to CSV" />-->
+                        <Label/>
+                    </HBox>
+                    <HBox fx:id="actionButtons">
+                        <Button fx:id="startButton" text="Start"/>
+                        <Button fx:id="stopButton" text="Stop" onAction="#onStopClicked"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+            <HBox fx:id="onlyBorder">
+                <CheckBox fx:id="saveCheckbox"/>
+                <Label text="Save results to CSV" />
+            </HBox>
+            <HBox>
+
+            </HBox>
         </VBox>
 
     </left>
     <center>
         <VBox>
+            <HBox>
+                <Label fx:id="dayNumber" text="SIMULATION" textAlignment="CENTER"/>
+            </HBox>
             <HBox>
                 <Label fx:id="infoLabel" text="All animals will be living here!" style="-fx-font-family: Consolas"/>
             </HBox>
@@ -51,15 +92,13 @@
                 <GridPane></GridPane>
             </HBox>
             <HBox>
-                <Label fx:id="statsLabel" text="Statistics here" style="-fx-font-family: Consolas"/>
+                <Label fx:id="statsLabel" style="-fx-font-family: Consolas"/>
             </HBox>
         </VBox>
     </center>
     <bottom>
         <VBox>
-            <HBox>
-                <Label text="CSV file name" /><CheckBox fx:id="saveCheckbox"/>
-            </HBox>
+
         </VBox>
     </bottom>
 </BorderPane>
