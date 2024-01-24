@@ -24,6 +24,8 @@ test {
     useJUnitPlatform()
 }
 
-//application {
-//    mainClassName = 'agh.ics.oop.WorldGUI'
-//}
+apply plugin: 'application'
+
+application {
+    mainClassName = 'agh.ics.oop.WorldGUI'
+}

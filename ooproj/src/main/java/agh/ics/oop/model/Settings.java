@@ -176,4 +176,46 @@ public class Settings {
     public void setWaterRangeLimit(int waterRangeLimit) {
         this.waterRangeLimit = waterRangeLimit;
     }
+
+
+    public void fromText(String[] lines) {
+        // taki jakby setter
+        this.mapWidth = Integer.parseInt(lines[0].split(" ")[1]);
+        this.mapHeight = Integer.parseInt(lines[1].split(" ")[1]);
+        this.startPlantCount = Integer.parseInt(lines[2].split(" ")[1]);
+        this.energyPerPlant = Integer.parseInt(lines[3].split(" ")[1]);
+        this.newPlantsPerDay = Integer.parseInt(lines[4].split(" ")[1]);
+        this.startAnimalCount = Integer.parseInt(lines[5].split(" ")[1]);
+        this.startAnimalEnergy = Integer.parseInt(lines[6].split(" ")[1]);
+        this.reproductionEnergyThreshold = Integer.parseInt(lines[7].split(" ")[1]);
+        this.energyUsedByParents = Integer.parseInt(lines[8].split(" ")[1]);
+        this.minMutationCount = Integer.parseInt(lines[9].split(" ")[1]);
+        this.maxMutationCount = Integer.parseInt(lines[10].split(" ")[1]);
+        this.mutationType = Integer.parseInt(lines[11].split(" ")[1]);
+        this.genomeLength = Integer.parseInt(lines[12].split(" ")[1]);
+        this.mapType = Integer.parseInt(lines[13].split(" ")[1]);
+        this.durationInDays = Integer.parseInt(lines[14].split(" ")[1]);
+        this.halfCycleLength = Integer.parseInt(lines[15].split(" ")[1]);
+        this.waterRangeLimit = Integer.parseInt(lines[16].split(" ")[1]);
+    }
+
+    public String toText() {
+        return "mapWidth: " + this.mapWidth + "\n" +
+                "mapHeight: " + this.mapHeight + "\n" +
+                "startPlantCount: " + this.startPlantCount + "\n" +
+                "energyPerPlant: " + this.energyPerPlant + "\n" +
+                "newPlantsPerDay: " + this.newPlantsPerDay + "\n" +
+                "startAnimalCount: " + this.startAnimalCount + "\n" +
+                "startAnimalEnergy: " + this.startAnimalEnergy + "\n" +
+                "reproductionEnergyThreshold: " + this.reproductionEnergyThreshold + "\n" +
+                "energyUsedByParents: " + this.energyUsedByParents + "\n" +
+                "minMutationCount: " + this.minMutationCount + "\n" +
+                "maxMutationCount: " + this.maxMutationCount + "\n" +
+                "mutationType: " + this.mutationType + "\n" +  // ???
+                "genomeLength: " + this.genomeLength + "\n" +
+                "mapType: " + this.mapType + "\n" +  // ???
+                "durationInDays: " + this.durationInDays + "\n" +
+                "halfCycleLength: " + this.halfCycleLength + "\n" +
+                "waterRangeLimit: " + this.waterRangeLimit;
+    }
 }

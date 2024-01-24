@@ -67,6 +67,8 @@
                     <HBox fx:id="actionButtons">
                         <Button fx:id="startButton" text="Start"/>
                         <Button fx:id="stopButton" text="Stop" onAction="#onStopClicked"/>
+                        <Button fx:id="savePresetButton" text="savePreset" onAction="#onSavePresetClicked"/>
+                        <Button fx:id="loadPresetButton" text="loadPreset" onAction="#onLoadPresetClicked"/>
                     </HBox>
                 </VBox>
             </HBox>
@@ -89,7 +91,7 @@
                 <Label fx:id="infoLabel" text="All animals will be living here!" style="-fx-font-family: Consolas"/>
             </HBox>
             <HBox>
-                <GridPane></GridPane>
+                <GridPane fx:id="mainGridPane" />
             </HBox>
             <HBox>
                 <Label fx:id="statsLabel" style="-fx-font-family: Consolas"/>
