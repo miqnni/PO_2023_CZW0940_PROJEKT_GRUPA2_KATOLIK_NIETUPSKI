@@ -64,6 +64,10 @@ public class Animal implements WorldElement {
         this.OZNACZENIE = (char)(rand.nextInt(90 - 65 + 1) + 65);
     }
 
+    public void setStartGeneId(int startGeneId) {
+        this.startGeneId = startGeneId;
+    }
+
     @Override
     public String toString() {
 //        return orientation.toString();
@@ -165,6 +169,10 @@ public class Animal implements WorldElement {
 
     public int getDaysLived() {
         return daysLived;
+    }
+
+    public void setOrientation(MapDirection orientation) {
+        this.orientation = orientation;
     }
 
     public void setDayOfDeath(int dayOfDeath) {

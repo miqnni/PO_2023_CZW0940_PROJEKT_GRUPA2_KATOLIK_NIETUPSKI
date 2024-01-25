@@ -1,6 +1,7 @@
 package agh.ics.oop.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -109,6 +110,14 @@ public class AnimalList implements WorldElement {
         int upperBound = greatestChildrenCountAnimals.size();
         int randIdx = rand.nextInt(upperBound);
         return greatestChildrenCountAnimals.get(randIdx);
+    }
+    public boolean containsGenome(Genome genome){
+        for (Animal animal : animals){
+            if (Arrays.equals(animal.getGenes(), genome.getGenes())){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -111,6 +111,8 @@
             <Label fx:id="statsLabel" style="-fx-font-family: Consolas"/>
             <Label fx:id="animalStatsLabel" style="-fx-font-family: Consolas"/>
             <Button fx:id="stopTrackingButton" text="Stop Tracking" onAction="#onStopTrackingClicked"/>
+            <Button fx:id="showPreferredFieldsButton" text="Fertile Fields" onAction="#onShowFertileFieldsClicked"/>
+            <Button fx:id="showDominantAnimalsButton" text="Dominant genome map" onAction="#onShowAnimalDominantGenotype"/>
         </VBox>
     </right>
     <bottom>

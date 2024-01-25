@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
@@ -51,6 +52,8 @@ public class SimulationPresenter implements SimulationChangeListener {
     public Label animalStatsLabel;
     public Button stopTrackingButton;
     public HBox presetButtons;
+    public Button showPreferredFieldsButton;
+    public Button showDominantAnimalsButton;
     @FXML
     private Label infoLabel;
     private Simulation simulation;
@@ -139,7 +142,50 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     }
 
+    public void onShowFertileFieldsClicked() {
+        showPreferredFieldsButton.setDisable(true);
+        showDominantAnimalsButton.setDisable(false);
+        Set<Vector2d> plantPreferredFields = simulation.getPreferredFields();
 
+        for (Node node : mapGrid.getChildren()) {
+            Integer colIndex = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+            colIndex = colIndex != null ? colIndex : 0;
+            rowIndex = rowIndex != null ? rowIndex : 0;
+
+            Vector2d position = new Vector2d(colIndex, rowIndex);
+            if (position.getX() != 0 && position.getY() != 0) {
+                if (plantPreferredFields.contains(position)) {
+                    node.setStyle("-fx-background-color: chartreuse; -fx-border-color: black;");
+                } else {
+                    node.setStyle("-fx-background-color: transparent; -fx-border-color: black;");
+                }
+            }
+        }
+    }
+
+
+    public void onShowAnimalDominantGenotype() {
+        showDominantAnimalsButton.setDisable(true);
+        showPreferredFieldsButton.setDisable(false);
+        Set<Vector2d> dominantAnimals = simulation.getAnimalsWithDominantGenotype();
+
+        for (Node node : mapGrid.getChildren()) {
+            Integer colIndex = GridPane.getColumnIndex(node);
+            Integer rowIndex = GridPane.getRowIndex(node);
+            colIndex = colIndex != null ? colIndex : 0;
+            rowIndex = rowIndex != null ? rowIndex : 0;
+
+            Vector2d position = new Vector2d(colIndex, rowIndex);
+            if (position.getX() != 0 && position.getY() != 0) {
+                if (dominantAnimals.contains(position)) {
+                    node.setStyle("-fx-background-color: chartreuse; -fx-border-color: black;");
+                } else {
+                    node.setStyle("-fx-background-color: transparent; -fx-border-color: black;");
+                }
+            }
+        }
+    }
 
     public int getSelectedMapTypeValue() {
         String selectedValue = mapTypeComboBox.getValue();
@@ -188,6 +234,8 @@ public class SimulationPresenter implements SimulationChangeListener {
     private void initialize() {
         stopButton.setDisable(true);
         stopTrackingButton.setVisible(false);
+        showPreferredFieldsButton.setVisible(false);
+        showDominantAnimalsButton.setVisible(false);
         mapTypeComboBox.setValue("Default");
         mutationTypeComboBox.setValue("Pure Randomness");
 
@@ -198,6 +246,10 @@ public class SimulationPresenter implements SimulationChangeListener {
             startButton.setDisable(true);
             stopButton.setDisable(false);
             loadPresetButton.setDisable(true);
+            showPreferredFieldsButton.setVisible(false);
+            showPreferredFieldsButton.setDisable(false);
+            showDominantAnimalsButton.setVisible(false);
+            showDominantAnimalsButton.setDisable(false);
             useSettings();
             if (!simulation.isPrepared()) {
                 simulation.prepare();
@@ -217,6 +269,8 @@ public class SimulationPresenter implements SimulationChangeListener {
     public void onStopClicked(ActionEvent actionEvent) {
         stopButton.setDisable(true);
         startButton.setDisable(false);
+        showPreferredFieldsButton.setVisible(true);
+        showDominantAnimalsButton.setVisible(true);
         if (simulation.getSimDayCnt() == simulation.getSettings().getDurationInDays()) {
             loadPresetButton.setDisable(false);
         }
@@ -306,5 +360,7 @@ public class SimulationPresenter implements SimulationChangeListener {
         stopTrackingButton.setVisible(false);
         animalStatsLabel.setText("");
     }
+
+
 }
 

@@ -790,4 +790,12 @@ public class AbstractWorldMap implements WorldMap {
     public Map<Vector2d, Plant> getPlants() {
         return plants;
     }
+
+    public int getMinEquatorHeight() {
+        return minEquatorHeight;
+    }
+
+    public int getMaxEquatorHeight() {
+        return maxEquatorHeight;
+    }
 }

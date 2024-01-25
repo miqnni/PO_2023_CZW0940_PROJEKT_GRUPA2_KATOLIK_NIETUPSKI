@@ -266,4 +266,30 @@ public class Simulation implements Runnable {
     public void setCurrentFilePath(String currentFilePath) {
         this.currentFilePath = currentFilePath;
     }
+
+    public Set<Vector2d> getPreferredFields(){
+        Set<Vector2d> preferredFields = new HashSet<>();
+        for (int i = 1; i < settings.getMapWidth() + 1; i++){
+            for (int j = testMap.getMinEquatorHeight() + 1; j < testMap.getMaxEquatorHeight() + 1; j++){
+                preferredFields.add(new Vector2d(i, j));
+            }
+        }
+        return preferredFields;
+    }
+
+    public Set<Vector2d> getAnimalsWithDominantGenotype(){
+        Set<Vector2d> DominantAnimals = new HashSet<>();
+        Genome dominant = findMostPopularGenotype(testMap);
+        if (dominant == null) return DominantAnimals;
+        for (int i = 1; i < settings.getMapWidth() + 1; i++){
+            for (int j = 1; j < settings.getMapHeight() + 1; j++){
+                if (testMap.getAnimals().get(new Vector2d(i -1, j -1)) != null){
+                    if (testMap.getAnimals().get(new Vector2d(i -1, j -1)).containsGenome(dominant)){
+                        DominantAnimals.add(new Vector2d(i, j));
+                    }
+                }
+            }
+        }
+        return DominantAnimals;
+    }
 }
