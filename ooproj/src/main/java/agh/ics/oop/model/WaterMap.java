@@ -4,7 +4,7 @@ import java.util.*;
 
 import static java.lang.Math.min;
 
-public class WaterMap extends AbstractWorldMap {
+public class WaterMap extends DefaultWorldMap {
 
     protected Map<Vector2d, Water> waterFields = new HashMap<>();
 

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AbstractWorldMapTest {
+class DefaultWorldMapTest {
 
     @Test
     void moveForward() {
@@ -28,7 +28,7 @@ class AbstractWorldMapTest {
                 40,
                 5
         );
-        AbstractWorldMap testMap =  new AbstractWorldMap(testSettings);
+        DefaultWorldMap testMap =  new DefaultWorldMap(testSettings);
 
         Animal animal_test0 = new Animal(new Vector2d(0, 6),testSettings, 0);
         Animal animal_test1 = new Animal(new Vector2d(29, 5),testSettings, 0);

@@ -1,7 +1,5 @@
 package agh.ics.oop;
 
-import agh.ics.oop.model.AbstractWorldMap;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,7 +15,7 @@ public class SimulationCSV {
         this.simulation = simulation;
     }
 
-    public void toCSV(String baseFileName, String directoryPath) {
+    public void convertSimulationToCSV(String baseFileName, String directoryPath) {
 
         try {
             Path simulationsFolderPath = Paths.get(directoryPath, "");
@@ -26,7 +24,7 @@ public class SimulationCSV {
             }
             if (currentFilePath == null) {
                 Path baseFilePath = simulationsFolderPath.resolve(baseFileName + ".csv");
-                currentFilePath = createUniqueFilePath(baseFilePath);
+                currentFilePath = createFilePath(baseFilePath);
             }
 
         } catch (IOException e) {
@@ -36,7 +34,7 @@ public class SimulationCSV {
         if (currentFilePath == null) {
             Path directory = Paths.get(directoryPath);
             Path baseFilePath = directory.resolve(baseFileName + ".csv");
-            currentFilePath = createUniqueFilePath(baseFilePath);
+            currentFilePath = createFilePath(baseFilePath);
         }
 
         StringBuilder csvBuilder = new StringBuilder();
@@ -46,13 +44,13 @@ public class SimulationCSV {
         }
 
         csvBuilder.append("Day,").append(simulation.getSimDayCnt()).append("\n");
-        csvBuilder.append("Animal count,").append(simulation.getTestMap().getAnimalCount()).append("\n");
-        csvBuilder.append("Plant count,").append(simulation.getTestMap().getPlantCount()).append("\n");
-        csvBuilder.append("Empty Field count,").append(simulation.getTestMap().getEmptyFieldCount()).append("\n");
-        csvBuilder.append("Avg Energy,").append(simulation.getTestMap().getAvgEnergy()).append("\n");
-        csvBuilder.append("Avg Lifespan,").append(simulation.getTestMap().getAvgLifespanOfDeadAnimals()).append("\n");
-        csvBuilder.append("Avg Children count,").append(simulation.getTestMap().getAvgChildrenCount()).append("\n");
-        csvBuilder.append("Dominant Genotype,").append(simulation.findMostPopularGenotype(simulation.getTestMap()) != null ? simulation.findMostPopularGenotype(simulation.getTestMap()).toString() : "None").append("\n");
+        csvBuilder.append("Animal count,").append(simulation.getMap().getAnimalCount()).append("\n");
+        csvBuilder.append("Plant count,").append(simulation.getMap().getPlantCount()).append("\n");
+        csvBuilder.append("Empty Field count,").append(simulation.getMap().getEmptyFieldCount()).append("\n");
+        csvBuilder.append("Avg Energy,").append(simulation.getMap().getAvgEnergy()).append("\n");
+        csvBuilder.append("Avg Lifespan,").append(simulation.getMap().getAvgLifespanOfDeadAnimals()).append("\n");
+        csvBuilder.append("Avg Children count,").append(simulation.getMap().getAvgChildrenCount()).append("\n");
+        csvBuilder.append("Dominant Genotype,").append(simulation.findMostPopularGenotype(simulation.getMap()) != null ? simulation.findMostPopularGenotype(simulation.getMap()).toString() : "None").append("\n");
         csvBuilder.append("\n");
 
         try {
@@ -64,7 +62,7 @@ public class SimulationCSV {
 
 
 
-    private Path createUniqueFilePath(Path originalPath) {
+    private Path createFilePath(Path originalPath) {
         int counter = 1;
         Path filePath = originalPath;
 

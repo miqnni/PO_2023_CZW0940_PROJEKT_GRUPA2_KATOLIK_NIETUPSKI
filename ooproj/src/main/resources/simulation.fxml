@@ -84,7 +84,7 @@
     <center>
         <VBox>
             <HBox>
-                <Label fx:id="dayNumber" text="SIMULATION" textAlignment="CENTER"/>
+                <Label fx:id="dayNumber" textAlignment="CENTER"/>
             </HBox>
             <HBox>
                 <Label fx:id="infoLabel" style="-fx-font-family: Consolas"/>

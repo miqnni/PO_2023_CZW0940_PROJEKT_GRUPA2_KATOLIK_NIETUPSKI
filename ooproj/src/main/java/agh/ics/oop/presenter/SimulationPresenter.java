@@ -18,44 +18,76 @@ import java.util.Set;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
+
     @FXML
-    public Label dayNumber;
-    public Button startButton;
-    public Spinner<Integer> mapWidthSpinner;
-    public Spinner<Integer> mapHeightSpinner;
-    public Spinner<Integer> startPlantCountSpinner;
-    public Spinner<Integer> energyPerPlantSpinner;
-    public Spinner<Integer> newPlantsPerDaySpinner;
-    public Spinner<Integer> startAnimalCountSpinner;
-    public Spinner<Integer> startAnimalEnergySpinner;
-    public Spinner<Integer> reproductionEnergyThresholdSpinner;
-    public Spinner<Integer> energyUsedByParentsSpinner;
-    public Spinner<Integer> minMutationCountSpinner;
-    public Spinner<Integer> maxMutationCountSpinner;
-    public Spinner<Integer> mutationTypeSpinner;
-    public Spinner<Integer> genomeLengthSpinner;
-//    public Spinner<Integer> mapTypeSpinner;
-    public Spinner<Integer> durationInDaysSpinner;
-    public Spinner<Integer> halfCycleLengthSpinner;
-    public Spinner<Integer> waterRangeLimitSpinner;
-    public Label statsLabel;
-    public Button stopButton;
-    public CheckBox saveCheckbox;
-    public ComboBox<String> mapTypeComboBox;
-    public ComboBox<String> mutationTypeComboBox;
-    public HBox actionButtons;
-    public HBox onlyBorder;
-    public GridPane mainGridPane;
-    public Button savePresetButton;
-    public Button loadPresetButton;
-    public GridPane mapGrid;
-    public Label animalStatsLabel;
-    public Button stopTrackingButton;
-    public HBox presetButtons;
-    public Button showPreferredFieldsButton;
-    public Button showDominantAnimalsButton;
+    private Label dayNumber;
+    @FXML
+    private Button startButton;
+    @FXML
+    private Spinner<Integer> mapWidthSpinner;
+    @FXML
+    private Spinner<Integer> mapHeightSpinner;
+    @FXML
+    private Spinner<Integer> startPlantCountSpinner;
+    @FXML
+    private Spinner<Integer> energyPerPlantSpinner;
+    @FXML
+    private Spinner<Integer> newPlantsPerDaySpinner;
+    @FXML
+    private Spinner<Integer> startAnimalCountSpinner;
+    @FXML
+    private Spinner<Integer> startAnimalEnergySpinner;
+    @FXML
+    private Spinner<Integer> reproductionEnergyThresholdSpinner;
+    @FXML
+    private Spinner<Integer> energyUsedByParentsSpinner;
+    @FXML
+    private Spinner<Integer> minMutationCountSpinner;
+    @FXML
+    private Spinner<Integer> maxMutationCountSpinner;
+    @FXML
+    private Spinner<Integer> genomeLengthSpinner;
+    @FXML
+    private Spinner<Integer> durationInDaysSpinner;
+    @FXML
+    private Spinner<Integer> halfCycleLengthSpinner;
+    @FXML
+    private Spinner<Integer> waterRangeLimitSpinner;
+    @FXML
+    private Label statsLabel;
+    @FXML
+    private Button stopButton;
+    @FXML
+    private CheckBox saveCheckbox;
+    @FXML
+    private ComboBox<String> mapTypeComboBox;
+    @FXML
+    private ComboBox<String> mutationTypeComboBox;
+    @FXML
+    private HBox actionButtons;
+    @FXML
+    private HBox onlyBorder;
+    @FXML
+    private GridPane mainGridPane;
+    @FXML
+    private Button savePresetButton;
+    @FXML
+    private Button loadPresetButton;
+    @FXML
+    private GridPane mapGrid;
+    @FXML
+    private Label animalStatsLabel;
+    @FXML
+    private Button stopTrackingButton;
+    @FXML
+    private HBox presetButtons;
+    @FXML
+    private Button showPreferredFieldsButton;
+    @FXML
+    private Button showDominantAnimalsButton;
     @FXML
     private Label infoLabel;
+
     private Simulation simulation;
     private Animal trackedAnimal;
 
@@ -66,7 +98,6 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     public void drawSimulationStatus(String message) {
         dayNumber.setText(message);
-//        infoLabel.setText(this.simulation.getTestMap().toString());
         statsLabel.setText(simulation.getStatsAsString());
     }
 
@@ -78,12 +109,11 @@ public class SimulationPresenter implements SimulationChangeListener {
         });
     }
 
-    private String calculateColor(int energy, int maxEnergy) {
-        maxEnergy = Math.max(maxEnergy, 1);
-        int intensity = (int) ((double) energy / maxEnergy * 255);
-        intensity = Math.min(255, Math.max(0, intensity));
+    private String calculateColor(int energy) {
+        int energyColorMark = (int) ((double) energy / Math.min(255, simulation.getSettings().getEnergyPerPlant() * 20) * 255);
+        energyColorMark = Math.min(255, Math.max(0, energyColorMark));
 
-        return String.format("#%02x%02x%02x", 255 - intensity, 0, Math.min(intensity, 255));
+        return String.format("#%02x%02x%02x", 255 - energyColorMark, 0, Math.min(energyColorMark, 255));
     }
 
     private void renderMapGrid() {
@@ -93,19 +123,17 @@ public class SimulationPresenter implements SimulationChangeListener {
             for (int i = 0; i < simulation.getSettings().getMapWidth(); i++) {
                 Label label = new Label(" ");
                 Vector2d position = new Vector2d(i, j);
-                if (simulation.getTestMap().isOccupied(position)) {
-//                    label.setText(simulation.getTestMap().objectAt(position).toString());
+                if (simulation.getMap().isOccupied(position)) {
 
-
-                    if (simulation.getTestMap().isOccupiedByWater(position)) {
+                    if (simulation.getMap().isOccupiedByWater(position)) {
                         label.getStyleClass().add("waterCell");
                     }
-                    else if (simulation.getTestMap().getAnimals().get(position) != null) {
+                    else if (simulation.getMap().getAnimals().get(position) != null) {
                         label.getStyleClass().add("animalCell");
-                        String colorCode = calculateColor(simulation.getTestMap().getAnimals().get(position).findBestAnimal().getEnergy(), 250);
+                        String colorCode = calculateColor(simulation.getMap().getAnimals().get(position).findBestAnimal().getEnergy());
                         label.setStyle("-fx-background-color: " + colorCode + ";");
                     }
-                    else if (simulation.getTestMap().getPlants().get(position) != null) {
+                    else if (simulation.getMap().getPlants().get(position) != null) {
                         label.getStyleClass().add("plantCell");
                     }
 
@@ -118,8 +146,8 @@ public class SimulationPresenter implements SimulationChangeListener {
                     animalStatsLabel.setText(trackedAnimal.getAnimalStats());
                 }
                 label.setOnMouseClicked(event -> {
-                    if (simulation.getTestMap().getAnimals().get(position) != null) {
-                        trackedAnimal = simulation.getTestMap().getAnimals().get(position).findBestAnimal();
+                    if (simulation.getMap().getAnimals().get(position) != null) {
+                        trackedAnimal = simulation.getMap().getAnimals().get(position).findBestAnimal();
                         animalStatsLabel.setText(trackedAnimal.getAnimalStats());
                         stopTrackingButton.setVisible(true);
                     }
@@ -148,12 +176,13 @@ public class SimulationPresenter implements SimulationChangeListener {
         Set<Vector2d> plantPreferredFields = simulation.getPreferredFields();
 
         for (Node node : mapGrid.getChildren()) {
-            Integer colIndex = GridPane.getColumnIndex(node);
-            Integer rowIndex = GridPane.getRowIndex(node);
-            colIndex = colIndex != null ? colIndex : 0;
-            rowIndex = rowIndex != null ? rowIndex : 0;
+            Integer col = GridPane.getColumnIndex(node);
+            Integer row = GridPane.getRowIndex(node);
 
-            Vector2d position = new Vector2d(colIndex, rowIndex);
+            col = col != null ? col : 0;
+            row = row != null ? row : 0;
+
+            Vector2d position = new Vector2d(col, row);
             if (position.getX() != 0 && position.getY() != 0) {
                 if (plantPreferredFields.contains(position)) {
                     node.setStyle("-fx-background-color: chartreuse; -fx-border-color: black;");
@@ -171,12 +200,13 @@ public class SimulationPresenter implements SimulationChangeListener {
         Set<Vector2d> dominantAnimals = simulation.getAnimalsWithDominantGenotype();
 
         for (Node node : mapGrid.getChildren()) {
-            Integer colIndex = GridPane.getColumnIndex(node);
-            Integer rowIndex = GridPane.getRowIndex(node);
-            colIndex = colIndex != null ? colIndex : 0;
-            rowIndex = rowIndex != null ? rowIndex : 0;
+            Integer col = GridPane.getColumnIndex(node);
+            Integer row = GridPane.getRowIndex(node);
 
-            Vector2d position = new Vector2d(colIndex, rowIndex);
+            col = col != null ? col : 0;
+            row = row != null ? row : 0;
+
+            Vector2d position = new Vector2d(col, row);
             if (position.getX() != 0 && position.getY() != 0) {
                 if (dominantAnimals.contains(position)) {
                     node.setStyle("-fx-background-color: chartreuse; -fx-border-color: black;");
@@ -240,9 +270,6 @@ public class SimulationPresenter implements SimulationChangeListener {
         mutationTypeComboBox.setValue("Pure Randomness");
 
         startButton.setOnAction(event -> {
-            /*System.out.println(mapTypeComboBox.getValue() + getSelectedMapTypeValue());
-            System.out.println(mutationTypeComboBox.getValue() + getSelectedMutationTypeValue());*/
-
             startButton.setDisable(true);
             stopButton.setDisable(false);
             loadPresetButton.setDisable(true);
@@ -346,7 +373,6 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     private void clearGrid() {
         if (simulation.getSimDayCnt() > 0) {
-//            mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));
             List<Node> childrenToRemove = new ArrayList<>(mapGrid.getChildren());
             mapGrid.getChildren().removeAll(childrenToRemove);
             mapGrid.getColumnConstraints().clear();

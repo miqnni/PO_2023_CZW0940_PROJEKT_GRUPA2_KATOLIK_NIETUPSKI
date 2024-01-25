@@ -4,14 +4,13 @@ import agh.ics.oop.model.*;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-import java.nio.file.Path;
 import java.util.*;
 
 public class Simulation implements Runnable {
     private final UUID simulationId;
     private Settings settings;
 
-    private AbstractWorldMap testMap;
+    private DefaultWorldMap map;
 
     private String currentFilePath;
 
@@ -51,17 +50,17 @@ public class Simulation implements Runnable {
 
     public void prepare() {
         if (settings.getMapType() == 3) {
-            this.testMap = new WaterMap(settings);
+            this.map = new WaterMap(settings);
         }
         else {
-            this.testMap = new AbstractWorldMap(settings);
+            this.map = new DefaultWorldMap(settings);
         }
 
         for (int i = 0; i < settings.getStartAnimalCount(); i++) {
-            Animal currAnimal = new Animal(testMap.randomField(), settings, 0);
-            testMap.place(currAnimal);
+            Animal currAnimal = new Animal(map.randomField(), settings, 0);
+            map.place(currAnimal);
         }
-        testMap.growPlantsInRandomFields(settings.getStartPlantCount());
+        map.growPlantsInRandomFields(settings.getStartPlantCount());
 
         this.simDayCnt = 0;
         prepared.set(true);
@@ -77,21 +76,21 @@ public class Simulation implements Runnable {
 
                 if (settings.getMapType() == 3) {
                     try {
-                        letOneDayPassWithWater((WaterMap) testMap);
+                        letOneDayPassWithWater((WaterMap) map);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
                 else {
                     try {
-                        letOneDayPass(testMap);
+                        letOneDayPass(map);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
 
                 if (isSaveToCSV()) {
-                    simulationCSV.toCSV("simstats", currentFilePath);
+                    simulationCSV.convertSimulationToCSV("simstats", currentFilePath);
                 }
 
                 simDayCnt++;
@@ -107,7 +106,7 @@ public class Simulation implements Runnable {
         simulationChanged("SIMULATION ENDED: " + simDayCnt + " DAYS PASSED");
     }
 
-    private void letOneDayPass(AbstractWorldMap selectedMap) throws InterruptedException {
+    private void letOneDayPass(DefaultWorldMap selectedMap) throws InterruptedException {
         int currDayVal = simDayCnt;
         simulationChanged("DAY " + currDayVal + " START");
         // day
@@ -123,7 +122,6 @@ public class Simulation implements Runnable {
         selectedMap.increaseDayCountOfAllAnimals();
 
         // transition to next day
-
     }
 
     private void letOneDayPassWithWater(WaterMap selectedMap) throws InterruptedException {
@@ -143,68 +141,48 @@ public class Simulation implements Runnable {
     }
 
     public void printStats() {
-        AbstractWorldMap selectedMap = testMap;
+        DefaultWorldMap selectedMap = map;
         System.out.println("Statistics: day " + simDayCnt);
-
-//        System.out.println(selectedMap);
-
-//        List<Animal> currAnimalList = selectedMap.createCurrAnimalList();
-//        for (Animal currAnimal : currAnimalList) {
-//            System.out.println(currAnimal + " " + currAnimal.getPosition() + " E=" + currAnimal.getEnergy() + " days=" + currAnimal.getDaysLived() + " GENES: " + Arrays.toString(currAnimal.getGenes()));
-//        }
-
         System.out.println("Animal count: " + selectedMap.getAnimalCount());
         System.out.println("Plant count: " + selectedMap.getPlantCount());
         System.out.println("Empty Field count: " + selectedMap.getEmptyFieldCount());
-//        System.out.printf("\t[FREE/ALL] Equator     : [%d/%d]%n", selectedMap.getFreeEquatorFields(), selectedMap.getFreeEquatorFields() + selectedMap.getTakenEquatorFields());
-//        System.out.printf("\t[FREE/ALL] Non-Equator : [%d/%d]%n", selectedMap.getFreeNonEquatorFields(), selectedMap.getFreeNonEquatorFields() + selectedMap.getTakenNonEquatorFields());
         System.out.println("Avg Energy: " + selectedMap.getAvgEnergy());
         System.out.println("Avg Lifespan: " + selectedMap.getAvgLifespanOfDeadAnimals());
         System.out.println("Avg Children count: " + selectedMap.getAvgChildrenCount());
         System.out.println("Most frequent gene: " + selectedMap.findMostFrequentGene());
-        // DEBUG
-//        printMostPopularGenotypes(testMap);
-        // END DEBUG
         System.out.println("Dominant genotype: " + findMostPopularGenotype(selectedMap));
         System.out.println("\n\n\n");
     }
 
     public String getStatsAsString() {
-        AbstractWorldMap selectedMap = testMap;
+        DefaultWorldMap selectedMap = map;
         StringBuilder result = new StringBuilder();
 
         result.append("Statistics: day ").append(simDayCnt).append("\n");
-        // ... (other append calls for each stat)
-
         result.append("Animal count: ").append(selectedMap.getAnimalCount()).append("\n");
         result.append("Plant count: ").append(selectedMap.getPlantCount()).append("\n");
         result.append("Empty Field count: ").append(selectedMap.getEmptyFieldCount()).append("\n");
-//        result.append("\t[FREE/ALL] Equator     : [").append(selectedMap.getFreeEquatorFields()).append("/").append(selectedMap.getFreeEquatorFields() + selectedMap.getTakenEquatorFields()).append("]\n");
-//        result.append("\t[FREE/ALL] Non-Equator : [").append(selectedMap.getFreeNonEquatorFields()).append("/").append(selectedMap.getFreeNonEquatorFields() + selectedMap.getTakenNonEquatorFields()).append("]\n");
         result.append("Avg Energy: ").append(selectedMap.getAvgEnergy()).append("\n");
         result.append("Avg Lifespan: ").append(selectedMap.getAvgLifespanOfDeadAnimals()).append("\n");
         result.append("Avg Children count: ").append(selectedMap.getAvgChildrenCount()).append("\n");
         result.append("Most frequent gene: ").append(selectedMap.findMostFrequentGene()).append("\n");
-        // DEBUG
-        // result.append(printMostPopularGenotypes(testMap)); // Assuming printMostPopularGenotypes returns a string
-        // END DEBUG
         result.append("Dominant genotype: ").append(findMostPopularGenotype(selectedMap)).append("\n\n\n");
 
         return result.toString();
     }
 
-    private void printMostPopularGenotypes(AbstractWorldMap selectedMap) {
-        for (Map.Entry<Genome, Integer> entry : testMap.getGenomeCount().entrySet()) {
+    private void printMostPopularGenotypes(DefaultWorldMap selectedMap) {
+        for (Map.Entry<Genome, Integer> entry : map.getGenomeCount().entrySet()) {
             Genome currGenome = entry.getKey();
             Integer currInteger = entry.getValue();
             System.out.println(currGenome + ": " + currInteger);
         }
     }
 
-    public Genome findMostPopularGenotype(AbstractWorldMap selectedMap) {
+    public Genome findMostPopularGenotype(DefaultWorldMap selectedMap) {
         Integer maxCnt = 1;
         Genome dominant = null;
-        for (Map.Entry<Genome, Integer> entry : testMap.getGenomeCount().entrySet()) {
+        for (Map.Entry<Genome, Integer> entry : map.getGenomeCount().entrySet()) {
             Genome currGenome = entry.getKey();
             Integer currInteger = entry.getValue();
             if (currInteger > maxCnt) {
@@ -215,8 +193,8 @@ public class Simulation implements Runnable {
         return dominant;
     }
 
-    public AbstractWorldMap getTestMap() {
-        return testMap;
+    public DefaultWorldMap getMap() {
+        return map;
     }
 
     public UUID getSimulationId() {
@@ -270,7 +248,7 @@ public class Simulation implements Runnable {
     public Set<Vector2d> getPreferredFields(){
         Set<Vector2d> preferredFields = new HashSet<>();
         for (int i = 1; i < settings.getMapWidth() + 1; i++){
-            for (int j = testMap.getMinEquatorHeight() + 1; j < testMap.getMaxEquatorHeight() + 1; j++){
+            for (int j = map.getMinEquatorHeight() + 1; j < map.getMaxEquatorHeight() + 1; j++){
                 preferredFields.add(new Vector2d(i, j));
             }
         }
@@ -279,12 +257,12 @@ public class Simulation implements Runnable {
 
     public Set<Vector2d> getAnimalsWithDominantGenotype(){
         Set<Vector2d> DominantAnimals = new HashSet<>();
-        Genome dominant = findMostPopularGenotype(testMap);
+        Genome dominant = findMostPopularGenotype(map);
         if (dominant == null) return DominantAnimals;
         for (int i = 1; i < settings.getMapWidth() + 1; i++){
             for (int j = 1; j < settings.getMapHeight() + 1; j++){
-                if (testMap.getAnimals().get(new Vector2d(i -1, j -1)) != null){
-                    if (testMap.getAnimals().get(new Vector2d(i -1, j -1)).containsGenome(dominant)){
+                if (map.getAnimals().get(new Vector2d(i -1, j -1)) != null){
+                    if (map.getAnimals().get(new Vector2d(i -1, j -1)).containsGenome(dominant)){
                         DominantAnimals.add(new Vector2d(i, j));
                     }
                 }

@@ -11,7 +11,7 @@ public class Animal implements WorldElement {
     private int childrenCount;
     private boolean alive;
     private int daysLived;
-    private int dayOfBirth;
+    private final int dayOfBirth;
     private int dayOfDeath;
 //    private Genome genome;
     private int[] genes;
@@ -29,9 +29,9 @@ public class Animal implements WorldElement {
 
     private List<Animal> children;
 
-    private AbstractWorldMap mapWhereItLives;
+    private DefaultWorldMap mapWhereItLives;
 
-    private char OZNACZENIE;
+    private final char letterMark;
 
     public Animal(Vector2d position, Settings settings, int dayOfBirth) {
 
@@ -61,7 +61,7 @@ public class Animal implements WorldElement {
         this.plantsEaten = 0;
         this.settings = settings;
 
-        this.OZNACZENIE = (char)(rand.nextInt(90 - 65 + 1) + 65);
+        this.letterMark = (char)(rand.nextInt(90 - 65 + 1) + 65);
     }
 
     public void setStartGeneId(int startGeneId) {
@@ -70,10 +70,8 @@ public class Animal implements WorldElement {
 
     @Override
     public String toString() {
-//        return orientation.toString();
-//        return "O";
 
-        return String.valueOf(OZNACZENIE);
+        return String.valueOf(letterMark);
     }
 
     public boolean isAt(Vector2d position) {
@@ -108,14 +106,12 @@ public class Animal implements WorldElement {
         }
 
         if (mapWhereItLives.isOccupiedByWater(newLocation)) {
-//            System.out.println("\t" + this + " Unable to move! " + newLocation);
             return;
         }
 
         if (newLocation.getY() >= boundY || newLocation.getY() < 0) {
             newLocation = new Vector2d(newLocation.getX(), position.getY());
             if (mapWhereItLives.isOccupiedByWater(newLocation)) {
-//                System.out.println("\t" + this + " Unable to move! " + newLocation);
                 return;
             }
             turn(4);
@@ -204,7 +200,7 @@ public class Animal implements WorldElement {
         this.energy = energy;
     }
 
-    public void setMapWhereItLives(AbstractWorldMap mapWhereItLives) {
+    public void setMapWhereItLives(DefaultWorldMap mapWhereItLives) {
         this.mapWhereItLives = mapWhereItLives;
     }
 

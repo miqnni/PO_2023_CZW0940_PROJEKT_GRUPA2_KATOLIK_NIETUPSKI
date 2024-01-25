@@ -28,7 +28,7 @@ class AnimalTest {
                 40,
                 5
         );
-        AbstractWorldMap testMap =  new AbstractWorldMap(testSettings);
+        DefaultWorldMap testMap =  new DefaultWorldMap(testSettings);
 
         Animal animal_test0 = new Animal(new Vector2d(0, 0),testSettings, 0);
         animal_test0.setOrientation(MapDirection.NORTHEAST);
@@ -75,7 +75,7 @@ class AnimalTest {
                 40,
                 5
         );
-        AbstractWorldMap testMap =  new AbstractWorldMap(testSettings);
+        DefaultWorldMap testMap =  new DefaultWorldMap(testSettings);
 
         Animal animal_test0 = new Animal(new Vector2d(0, 0),testSettings, 0);
         animal_test0.setOrientation(MapDirection.NORTHEAST);
