@@ -1,0 +1,71 @@
+.spinner, .combo-box{
+    -fx-padding: 0 5px 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+    -fx-pref-width: 160px;
+}
+
+.label {
+    -fx-padding: 0 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+
+}
+
+/*.button {*/
+/*    -fx-padding: 5px;*/
+/*}*/
+
+#stopButton, #startButton {
+    -fx-padding: 5px;
+    -fx-pref-width: 50px;
+}
+
+#actionButtons {
+    -fx-padding: 0 5px;
+    -fx-spacing: 10px;
+}
+
+#presetButtons {
+    -fx-padding: 0 5px;
+    -fx-spacing: 10px;
+}
+
+#onlyBorder {
+    -fx-padding: 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+    -fx-border-style: solid;
+    -fx-border-color: darkgrey;
+    -fx-border-width: 1px;
+}
+
+.check-box {
+    -fx-padding: 0 0 0 5px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
+
+.waterCell {
+    -fx-background-color: darkslategrey;
+    -fx-border-color: black;
+}
+
+.plantCell {
+    -fx-background-color: green;
+    -fx-border-color: black;
+}
+
+.emptyCell {
+    -fx-background-color: lightgrey;
+    -fx-border-color: black;
+}
+
+.animalCell {
+    /*-fx-background-color: burlywood;*/
+    -fx-border-color: black;
+}
+
+* {
+    -fx-font-family: Consolas;
+}
