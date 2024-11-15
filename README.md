@@ -1,4 +1,5 @@
-# PO_2023_CZW0940_PROJEKT_GRUPA2
-Projekt z przedmiotu Programowanie Obiektowe
+Final project for Object-Oriented Programming course at the 2nd year of Computer Science at AGH University of Krakow.
+
+# Authors
 - Maksymilian Katolik
 - Mikołaj Nietupski
